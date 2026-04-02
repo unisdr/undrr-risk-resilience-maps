@@ -156,7 +156,7 @@ async function toggleLayer(layer, eyeBtn, wrapper) {
     arrow.textContent = "\u25BC";
 
     addOpacitySlider(layer.id, sliderSlot);
-    addLegend(layer.id, legendSlot);
+    addLegend(layer, legendSlot);
   }
 }
 
@@ -204,9 +204,35 @@ async function addOpacitySlider(idView, container) {
   container.appendChild(row);
 }
 
-async function addLegend(idView, container) {
+async function addLegend(layer, container) {
+  const hasLocalLegend = Array.isArray(layer.legend) && layer.legend.length > 0;
+
+  // Render local legend override if defined
+  if (hasLocalLegend) {
+    const el = document.createElement("div");
+    el.className = "html-legend";
+    for (const item of layer.legend) {
+      const row = document.createElement("div");
+      row.className = "html-legend-row";
+
+      const swatch = document.createElement("span");
+      swatch.className = "html-legend-swatch";
+      swatch.style.background = item.color || "#ccc";
+      row.appendChild(swatch);
+
+      const label = document.createElement("span");
+      label.className = "html-legend-label";
+      label.textContent = item.label || "";
+      row.appendChild(label);
+
+      el.appendChild(row);
+    }
+    container.appendChild(el);
+  }
+
+  // Fetch SDK legend image
   try {
-    const legendData = await getViewLegendImage(idView);
+    const legendData = await getViewLegendImage(layer.id);
     if (!legendData) return;
 
     const img = document.createElement("img");
@@ -214,8 +240,21 @@ async function addLegend(idView, container) {
     img.src = legendData.startsWith("data:")
       ? legendData
       : `data:image/png;base64,${legendData}`;
-    img.alt = "Legend";
-    container.appendChild(img);
+    img.alt = "SDK legend";
+
+    if (hasLocalLegend) {
+      // Show as collapsed diagnostic
+      const details = document.createElement("details");
+      details.className = "legend-diagnostic";
+      const summary = document.createElement("summary");
+      summary.textContent = "SDK legend (diagnostic)";
+      details.appendChild(summary);
+      details.appendChild(img);
+      container.appendChild(details);
+    } else {
+      // No local override -- show SDK image directly
+      container.appendChild(img);
+    }
   } catch {
     // Not all layers have legends
   }

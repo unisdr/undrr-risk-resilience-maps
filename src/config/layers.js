@@ -8,6 +8,9 @@
  *   desc     - Short description shown when layer is expanded
  *   project  - MapX project ID (for cross-project awareness)
  *   disabled - true if layer is "coming soon" (greyed out, not toggleable)
+ *   legend   - optional local legend override. Array of {color, label} objects.
+ *              When present, rendered as HTML swatches instead of the SDK PNG.
+ *              The SDK image is still shown in a collapsed diagnostic toggle.
  *
  * Layers from the Eco-DRR project (MX-2LD-FBB-58N-ROK-8RH) can be loaded
  * directly. Layers from other projects will need cross-project handling.
@@ -26,8 +29,19 @@ export const TABS = [
         id: "MX-V07LO-829XA-4BIZ8",
         label: "River Flooding",
         type: "rt",
-        desc: "Flood hazard 25yr return period (GAR model).",
+        desc: "Flood hazard 25yr return period (GAR model). Depth in mm.",
         project: ECO_DRR,
+        legend: [
+          { color: "#f7fbff", label: "<= 10 mm" },
+          { color: "#d2e3f3", label: "50 mm" },
+          { color: "#9fcae1", label: "100 mm" },
+          { color: "#6baed6", label: "200 mm" },
+          { color: "#3182bd", label: "500 mm" },
+          { color: "#1c6cb1", label: "1000 mm" },
+          { color: "#0b4d94", label: "2000 mm" },
+          { color: "#08306b", label: "5000 mm" },
+          { color: "#041e42", label: "> 5000 mm" },
+        ],
       },
       {
         id: "MX-21A2A-BED99-D8D78",
