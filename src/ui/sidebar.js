@@ -1,6 +1,6 @@
 import { TABS } from "../config/layers.js";
 import * as store from "../state/store.js";
-import { viewAdd, viewRemove, getViewLegendImage, getViewMeta } from "../sdk/views.js";
+import { viewAdd, viewRemove, getViewLegendImage } from "../sdk/views.js";
 import {
   setViewLayerTransparency,
   getViewLayerTransparency,
@@ -205,135 +205,18 @@ async function addOpacitySlider(idView, container) {
 }
 
 async function addLegend(idView, container) {
-  // Try building an HTML legend from view metadata
-  try {
-    const meta = await getViewMeta(idView);
-    console.log(`[legend] getViewMeta(${idView}):`, JSON.stringify(meta, null, 2)?.substring(0, 2000));
-    const htmlLegend = buildHtmlLegend(meta);
-    if (htmlLegend) {
-      container.appendChild(htmlLegend);
-    } else {
-      console.log(`[legend] No rules extracted for ${idView}`);
-    }
-  } catch (e) {
-    console.log(`[legend] getViewMeta error for ${idView}:`, e.message);
-  }
-
-  // Also show the prerendered SDK legend image as diagnostic
   try {
     const legendData = await getViewLegendImage(idView);
     if (!legendData) return;
-
-    const details = document.createElement("details");
-    details.className = "legend-diagnostic";
-
-    const summary = document.createElement("summary");
-    summary.textContent = "SDK legend (diagnostic)";
-    details.appendChild(summary);
 
     const img = document.createElement("img");
     img.className = "layer-legend-img";
     img.src = legendData.startsWith("data:")
       ? legendData
       : `data:image/png;base64,${legendData}`;
-    img.alt = "SDK legend";
-    details.appendChild(img);
-
-    container.appendChild(details);
+    img.alt = "Legend";
+    container.appendChild(img);
   } catch {
     // Not all layers have legends
   }
-}
-
-/**
- * Build an HTML legend from view metadata.
- * Returns a DOM element or null if the metadata doesn't contain legend info.
- */
-function buildHtmlLegend(meta) {
-  if (!meta) return null;
-
-  // Raster views: look for style rules or paint properties
-  const rules = extractLegendRules(meta);
-  if (!rules || rules.length === 0) return null;
-
-  const el = document.createElement("div");
-  el.className = "html-legend";
-
-  for (const rule of rules) {
-    const row = document.createElement("div");
-    row.className = "html-legend-row";
-
-    const swatch = document.createElement("span");
-    swatch.className = "html-legend-swatch";
-    swatch.style.background = rule.color || "#ccc";
-    if (rule.symbol === "line") {
-      swatch.style.height = "3px";
-      swatch.style.borderRadius = "0";
-    }
-    row.appendChild(swatch);
-
-    const label = document.createElement("span");
-    label.className = "html-legend-label";
-    label.textContent = rule.label || "";
-    row.appendChild(label);
-
-    el.appendChild(row);
-  }
-
-  return el;
-}
-
-/**
- * Extract legend rules from view metadata.
- * MapX metadata structure varies by view type; we try several paths.
- */
-function extractLegendRules(meta) {
-  const rules = [];
-
-  // Path 1: meta.legend (some views have this directly)
-  if (meta.legend && Array.isArray(meta.legend)) {
-    for (const item of meta.legend) {
-      rules.push({
-        color: item.color || item.fill || item.value,
-        label: item.label || item.text || item.category || "",
-        symbol: item.symbol || "box",
-      });
-    }
-    if (rules.length > 0) return rules;
-  }
-
-  // Path 2: meta.style?.rules or meta.data?.style?.rules (vector views)
-  const styleRules =
-    meta.style?.rules ||
-    meta.data?.style?.rules ||
-    meta.data?.paint?.rules;
-  if (Array.isArray(styleRules)) {
-    for (const rule of styleRules) {
-      rules.push({
-        color: rule.color || rule.fillColor || rule.value,
-        label: rule.label || rule.category || String(rule.value ?? ""),
-        symbol: rule.symbol || "box",
-      });
-    }
-    if (rules.length > 0) return rules;
-  }
-
-  // Path 3: colour ramp from raster paint (gradient stops)
-  const stops =
-    meta.style?.stops ||
-    meta.data?.style?.stops ||
-    meta.data?.paint?.["raster-color"]?.stops;
-  if (Array.isArray(stops)) {
-    for (const stop of stops) {
-      const [value, color] = Array.isArray(stop) ? stop : [stop.value, stop.color];
-      rules.push({
-        color: color || "#ccc",
-        label: String(value ?? ""),
-        symbol: "box",
-      });
-    }
-    if (rules.length > 0) return rules;
-  }
-
-  return null;
 }
