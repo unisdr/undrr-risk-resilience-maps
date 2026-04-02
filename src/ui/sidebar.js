@@ -84,8 +84,8 @@ function buildLayerAccordion(layer) {
 
   if (!layer.disabled) {
     const eyeBtn = document.createElement("button");
-    eyeBtn.className = "layer-eye mg-button";
-    eyeBtn.textContent = "\uD83D\uDC41"; // 👁
+    eyeBtn.className = "layer-eye";
+    eyeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
     eyeBtn.title = "Toggle layer";
     eyeBtn.addEventListener("click", (e) => {
       e.stopPropagation();

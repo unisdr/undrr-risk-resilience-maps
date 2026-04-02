@@ -127,21 +127,29 @@
 }
 
 .layer-eye {
-  font-size: 0.85rem;
-  padding: 0.15rem 0.3rem;
-  min-width: unset;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
   background: transparent;
   border: 1px solid #ccc;
   border-radius: 3px;
   cursor: pointer;
   flex-shrink: 0;
+  color: #999;
+}
+
+.layer-eye:hover {
+  border-color: #004f91;
+  color: #004f91;
 }
 
 .layer-eye.is-active {
   background: #004f91;
   border-color: #004f91;
-  filter: brightness(0) invert(1);
+  color: #fff;
 }
 
 /* ── Layer body (expanded) ─────────────────────────── */
