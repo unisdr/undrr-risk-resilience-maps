@@ -208,12 +208,15 @@ async function addLegend(idView, container) {
   // Try building an HTML legend from view metadata
   try {
     const meta = await getViewMeta(idView);
+    console.log(`[legend] getViewMeta(${idView}):`, JSON.stringify(meta, null, 2)?.substring(0, 2000));
     const htmlLegend = buildHtmlLegend(meta);
     if (htmlLegend) {
       container.appendChild(htmlLegend);
+    } else {
+      console.log(`[legend] No rules extracted for ${idView}`);
     }
-  } catch {
-    // Metadata not available
+  } catch (e) {
+    console.log(`[legend] getViewMeta error for ${idView}:`, e.message);
   }
 
   // Also show the prerendered SDK legend image as diagnostic
