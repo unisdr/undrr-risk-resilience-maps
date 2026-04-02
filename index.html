@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNDRR Risk to Resilience Map</title>
+    <link
+      rel="stylesheet"
+      href="https://assets.undrr.org/testing/static/mangrove/1.4.0/css/style.css"
+    />
+  </head>
+  <body>
+    <!-- UNDRR page header -->
+    <header class="mg-page-header mg-page-header--default">
+      <div class="mg-page-header__decoration">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="mg-page-header__toolbar-wrapper">
+        <div class="mg-page-header__container mg-container">
+          <div
+            class="mg-page-header__region mg-page-header__region--toolbar"
+          >
+            <section
+              class="mg-page-header__block mg-page-header__block--logo"
+            >
+              <a href="https://www.undrr.org">
+                <img
+                  src="https://assets.undrr.org/static/logos/undrr/undrr-logo-horizontal.svg"
+                  alt="UNDRR Logo"
+                  width="324"
+                  height="47"
+                  class="mg-page-header__logo-img"
+                />
+              </a>
+            </section>
+            <section class="mg-page-header__block">
+              <span style="color: #fff; font-size: 0.875rem; font-weight: 600"
+                >Risk to Resilience Map</span
+              >
+              <span id="status" class="status-badge" style="margin-left: 0.5rem"
+                >Connecting...</span
+              >
+            </section>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- App layout: sidebar + map -->
+    <div class="app-layout">
+      <aside class="app-sidebar" id="sidebar">
+        <div class="app-sidebar-header">
+          <h2>Layers</h2>
+          <p class="mg-form-help">
+            Toggle layers by category. Click the map for feature details.
+          </p>
+        </div>
+      </aside>
+
+      <main class="app-map">
+        <div id="mapx" style="width: 100%; height: 100%"></div>
+
+        <!-- Feature infobox (hidden by default) -->
+        <div id="infobox" class="infobox">
+          <div class="infobox-header">
+            <h3 class="infobox-title">Feature</h3>
+            <button class="infobox-close">&times;</button>
+          </div>
+          <div class="infobox-body"></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- MapX SDK must load before module script -->
+    <script src="https://app.mapx.org/sdk/mxsdk.umd.js"></script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
