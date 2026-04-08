@@ -1,157 +1,191 @@
 /**
- * Home / About panel — overview, categories, roadmap, credits.
+ * Info pages (Home, Guide, Sources, Downloads) — full-page layouts
+ * using UNDRR Mangrove design system conventions.
  */
 
-.info-page-panel {
-  padding: 0.75rem;
+/* ── Hero header band ── */
+
+.info-page-hero {
+  background-color: #004f91;
+  color: #fff;
+  padding: 3rem 1rem 2.5rem;
 }
 
-.home-intro {
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
-  line-height: 1.5;
-  margin: 0 0 1rem;
+.info-page-hero--secondary {
+  background-color: #1a6faa;
 }
 
-.home-section {
-  margin-bottom: 1rem;
+.info-page-hero .mg-container {
+  max-width: 900px;
 }
 
-.home-section-title {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
+.info-page-hero__eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
   letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin: 0 0 0.5rem;
 }
 
-.home-category-list {
+.info-page-hero__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.75rem;
+  line-height: 1.2;
+}
+
+.info-page-hero__intro {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 44rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Content sections ── */
+
+.info-page-section {
+  padding: 2.5rem 1rem;
+}
+
+.info-page-section--grey {
+  background-color: #f2f5f8;
+}
+
+.info-page-section .mg-container {
+  max-width: 900px;
+}
+
+.info-page-section__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #004f91;
+  margin: 0 0 1.5rem;
+  border-bottom: 2px solid #004f91;
+  padding-bottom: 0.4rem;
+}
+
+/* ── Category cards grid ── */
+
+.info-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.info-category-card {
+  max-width: none !important;
+}
+
+.info-category-card__num {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 72px;
+  display: block;
+}
+
+/* ── Guide steps ── */
+
+.info-steps-list {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.info-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.info-step:last-child {
+  border-bottom: none;
+}
+
+.info-step__num {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #004f91;
+  min-width: 2.5rem;
+  flex-shrink: 0;
+  line-height: 1;
+  padding-top: 0.1rem;
+}
+
+.info-step__title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.25rem;
+}
+
+.info-step__desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4d4d4d;
+  line-height: 1.5;
+}
+
+/* ── Sources ── */
+
+.info-source-category {
+  margin-bottom: 2rem;
+}
+
+.info-source-category__title {
+  margin: 0 0 0.75rem;
+}
+
+.info-source-entries {
+  border-left: 3px solid #b3cade;
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.info-source-entry__label {
+  margin: 0 0 0.2rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #004f91;
+}
+
+.info-source-entry__detail {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #4d4d4d;
+  line-height: 1.5;
+}
+
+/* ── Downloads / plain lists ── */
+
+.info-plain-list {
+  padding-left: 1.25rem;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
-.home-category-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
+/* ── Credits ── */
+
+.info-page-credits {
+  font-size: 0.9rem;
+  color: #4d4d4d;
 }
 
-.home-category-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-.home-category-desc {
-  font-size: 0.72rem;
-  color: var(--color-text-muted);
-  line-height: 1.4;
-}
-
-.home-roadmap-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.home-roadmap-list li {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  padding-left: 0.9rem;
-  position: relative;
-}
-
-.home-roadmap-list li::before {
-  content: "·";
-  position: absolute;
-  left: 0.25rem;
-  color: var(--color-border);
-}
-
-.home-credits p {
-  font-size: 0.72rem;
-  color: var(--color-text-muted);
-  line-height: 1.5;
-  margin: 0;
-}
-
-.home-credits a {
-  color: var(--color-primary);
-}
-
-/* ── Info panels (Guide, Sources, Downloads) ──────── */
-
-.info-steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  counter-reset: steps;
-}
-
-.info-steps li {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  line-height: 1.45;
-  padding-left: 1.5rem;
-  position: relative;
-  counter-increment: steps;
-}
-
-.info-steps li::before {
-  content: counter(steps);
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  background: var(--color-primary-light);
-  border-radius: 50%;
-  width: 1rem;
-  height: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.info-steps strong {
-  color: var(--color-text);
-  font-weight: 600;
-}
-
-.info-source-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-}
-
-.info-source-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-.info-source-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.info-source-item .home-category-desc a {
-  color: var(--color-primary);
+.info-page-credits a {
+  color: #004f91;
 }

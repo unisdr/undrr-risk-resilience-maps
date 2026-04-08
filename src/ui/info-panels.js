@@ -1,34 +1,75 @@
 /**
  * Static info panels: Guide, Sources, Downloads.
- * Each returns a DOM element ready to be appended to the panel body.
+ * Full-page views using UNDRR Mangrove design system classes.
  */
 
 // ── Guide ─────────────────────────────────────────────────────────────────────
 
+const GUIDE_STEPS = [
+  {
+    title: "Select a category",
+    desc: "Choose Hazard, Exposure, Vulnerability, or Risk from the navigation bar. The layer panel updates to show datasets for that category.",
+  },
+  {
+    title: "Enable a layer",
+    desc: "Click the eye icon next to any layer name to toggle it on the map.",
+  },
+  {
+    title: "Expand for details",
+    desc: "Click a layer name to open its accordion and see a description, opacity slider, and legend.",
+  },
+  {
+    title: "Adjust opacity",
+    desc: "Use the slider to blend a layer with the basemap and compare multiple datasets.",
+  },
+  {
+    title: "Inspect features",
+    desc: "Click any map feature to see its attribute data in a popup.",
+  },
+  {
+    title: "Return to this page",
+    desc: "Click <em>UNDRR Resilience Maps</em> in the navigation bar at any time.",
+  },
+];
+
 export function buildGuidePanel() {
   return buildPanel("tab-guide", `
-    <p class="home-intro">A step-by-step guide to using the Risk to Resilience Map.</p>
+    <div class="info-page-hero info-page-hero--secondary">
+      <div class="mg-container">
+        <h1 class="info-page-hero__title">Guide</h1>
+        <p class="info-page-hero__intro">A step-by-step guide to using the UNDRR Risk to Resilience Maps prototype.</p>
+      </div>
+    </div>
 
-    <section class="home-section">
-      <h2 class="home-section-title">Getting started</h2>
-      <ol class="info-steps">
-        <li><strong>Select a category</strong> — choose Hazard, Exposure, Vulnerability, or Risk from the navigation bar. The panel updates to show layers for that category.</li>
-        <li><strong>Enable a layer</strong> — click the eye icon next to any layer name to toggle it on the map.</li>
-        <li><strong>Expand for details</strong> — click the layer name to open its accordion and see a description, opacity slider, and legend.</li>
-        <li><strong>Adjust opacity</strong> — use the slider to blend a layer with the basemap.</li>
-        <li><strong>Inspect features</strong> — click any map feature to see its attribute data in a popup.</li>
-        <li><strong>Return here</strong> — click <em>Risk to Resilience Map</em> in the navigation bar to return to the About panel.</li>
-      </ol>
-    </section>
+    <div class="info-page-section">
+      <div class="mg-container">
+        <h2 class="info-page-section__title">Getting started</h2>
+        <ol class="info-steps-list">
+          ${GUIDE_STEPS.map((s, i) => `
+            <li class="info-step">
+              <span class="info-step__num">${String(i + 1).padStart(2, "0")}</span>
+              <div class="info-step__content">
+                <strong class="info-step__title">${s.title}</strong>
+                <p class="info-step__desc">${s.desc}</p>
+              </div>
+            </li>
+          `).join("")}
+        </ol>
+      </div>
+    </div>
 
-    <section class="home-section">
-      <h2 class="home-section-title">Notes</h2>
-      <ul class="home-roadmap-list">
-        <li>Layers marked as coming soon are greyed out and not yet available.</li>
-        <li>This tool is in active development. Data and design are subject to change.</li>
-        <li>For questions or feedback, contact the UNDRR digital team.</li>
-      </ul>
-    </section>
+    <div class="info-page-section info-page-section--grey">
+      <div class="mg-container">
+        <div class="mg-highlight-box mg-highlight-box--secondary">
+          <h3>Notes</h3>
+          <ul>
+            <li>Layers marked as <em>coming soon</em> are not yet available.</li>
+            <li>This tool is in active development. Data and design are subject to change.</li>
+            <li>For questions or feedback, contact the UNDRR digital team.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   `);
 }
 
@@ -116,22 +157,34 @@ const SOURCES = [
 
 export function buildSourcesPanel() {
   const sections = SOURCES.map(({ category, entries }) => `
-    <section class="home-section">
-      <h2 class="home-section-title">${category}</h2>
-      <ul class="info-source-list">
+    <div class="info-source-category">
+      <h3 class="info-source-category__title">
+        <span class="mg-tag mg-tag--outline">${category}</span>
+      </h3>
+      <div class="info-source-entries">
         ${entries.map((e) => `
-          <li class="info-source-item">
-            <span class="info-source-label">${e.label}</span>
-            <span class="home-category-desc">${e.detail}</span>
-          </li>
+          <div class="info-source-entry">
+            <p class="info-source-entry__label">${e.label}</p>
+            <p class="info-source-entry__detail">${e.detail}</p>
+          </div>
         `).join("")}
-      </ul>
-    </section>
+      </div>
+    </div>
   `).join("");
 
   return buildPanel("tab-sources", `
-    <p class="home-intro">Data sources for each category. Placeholder entries will be updated as layers are confirmed with the UNDRR programme team.</p>
-    ${sections}
+    <div class="info-page-hero info-page-hero--secondary">
+      <div class="mg-container">
+        <h1 class="info-page-hero__title">Sources</h1>
+        <p class="info-page-hero__intro">Data sources for each category. Placeholder entries will be updated as layers are confirmed with the UNDRR programme team.</p>
+      </div>
+    </div>
+
+    <div class="info-page-section">
+      <div class="mg-container">
+        ${sections}
+      </div>
+    </div>
   `);
 }
 
@@ -139,25 +192,36 @@ export function buildSourcesPanel() {
 
 export function buildDownloadsPanel() {
   return buildPanel("tab-downloads", `
-    <p class="home-intro">Data download links will be added here as layers are confirmed and licensed for distribution.</p>
+    <div class="info-page-hero info-page-hero--secondary">
+      <div class="mg-container">
+        <h1 class="info-page-hero__title">Downloads</h1>
+        <p class="info-page-hero__intro">Data download links will be added here as layers are confirmed and licensed for distribution.</p>
+      </div>
+    </div>
 
-    <section class="home-section">
-      <h2 class="home-section-title">In the meantime</h2>
-      <ul class="home-roadmap-list">
-        <li>Visit the original data providers listed in <strong>Sources</strong> for direct data access.</li>
-        <li>The <a href="https://global.infrastructureresilience.org/downloads" target="_blank" rel="noopener">GRI Risk Viewer downloads page</a> provides access to GRI baseline datasets.</li>
-        <li>Each dataset is subject to its own licensing terms — see Sources for full attribution.</li>
-      </ul>
-    </section>
+    <div class="info-page-section">
+      <div class="mg-container">
+        <h2 class="info-page-section__title">In the meantime</h2>
+        <ul class="info-plain-list">
+          <li>Visit the original data providers listed in <strong>Sources</strong> for direct data access.</li>
+          <li>The <a href="https://global.infrastructureresilience.org/downloads" target="_blank" rel="noopener">GRI Risk Viewer downloads page</a> provides access to GRI baseline datasets.</li>
+          <li>Each dataset is subject to its own licensing terms — see Sources for full attribution.</li>
+        </ul>
+      </div>
+    </div>
 
-    <section class="home-section">
-      <h2 class="home-section-title">Planned</h2>
-      <ul class="home-roadmap-list">
-        <li>Per-layer download links to source datasets</li>
-        <li>Site data export (attribute data for a clicked location)</li>
-        <li>Bulk data package download</li>
-      </ul>
-    </section>
+    <div class="info-page-section info-page-section--grey">
+      <div class="mg-container">
+        <div class="mg-highlight-box mg-highlight-box--secondary">
+          <h3>Planned</h3>
+          <ul>
+            <li>Per-layer download links to source datasets</li>
+            <li>Site data export (attribute data for a clicked location)</li>
+            <li>Bulk data package download</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   `);
 }
 
@@ -170,3 +234,4 @@ function buildPanel(id, innerHTML) {
   el.innerHTML = innerHTML;
   return el;
 }
+

@@ -15,6 +15,7 @@ import {
 } from "../sdk/filters.js";
 import { buildHomePanel } from "./home.js";
 import { buildGuidePanel, buildSourcesPanel, buildDownloadsPanel } from "./info-panels.js";
+import { buildWidget, isCompound, compoundKey } from "./widgets/index.js";
 
 // MapX view types: cc = custom coded (live), rt = raster tile, vt = vector tile
 const TYPE_LABELS = { cc: "live", rt: "raster", vt: "vector" };
@@ -175,6 +176,11 @@ function buildLayerAccordion(layer) {
     body.appendChild(desc);
   }
 
+  // Widget slot (compound layers render source-switcher here)
+  const widgetSlot = document.createElement("div");
+  widgetSlot.className = "layer-widget-slot";
+  body.appendChild(widgetSlot);
+
   // Opacity slider placeholder (added when layer is active)
   const sliderSlot = document.createElement("div");
   sliderSlot.className = "layer-slider-slot";
@@ -213,34 +219,50 @@ function buildLayerAccordion(layer) {
 }
 
 async function toggleLayer(layer, eyeBtn, wrapper) {
+  const widgetSlot = wrapper.querySelector(".layer-widget-slot");
   const sliderSlot = wrapper.querySelector(".layer-slider-slot");
   const legendSlot = wrapper.querySelector(".layer-legend-slot");
+  const compound = isCompound(layer);
 
-  if (store.openViews.has(layer.id)) {
-    try {
-      await viewRemove(layer.id);
-    } catch (err) {
-      console.warn(`Failed to remove layer ${layer.id}:`, err);
+  // Determine which view ID is currently active
+  const key = compound ? compoundKey(layer) : null;
+  const activeIdx = compound ? store.getActiveSource(key) : 0;
+  const activeViewId = compound ? layer.sources[activeIdx].id : layer.id;
+
+  // Is this layer currently on? For compound layers, check if ANY source is open.
+  const isOn = compound
+    ? layer.sources.some((s) => store.openViews.has(s.id))
+    : store.openViews.has(layer.id);
+
+  if (isOn) {
+    // Turn off -- remove whichever source view is active
+    const removeId = compound
+      ? layer.sources.find((s) => store.openViews.has(s.id))?.id
+      : layer.id;
+    if (removeId) {
+      try { await viewRemove(removeId); } catch (err) {
+        console.warn(`Failed to remove view ${removeId}:`, err);
+      }
+      store.openViews.delete(removeId);
     }
-    store.openViews.delete(layer.id);
     eyeBtn.classList.remove("is-active");
     eyeBtn.setAttribute("aria-pressed", "false");
     wrapper.classList.remove("layer-active");
+    widgetSlot.innerHTML = "";
     sliderSlot.innerHTML = "";
     legendSlot.innerHTML = "";
   } else {
-    try {
-      await viewAdd(layer.id);
-    } catch (err) {
-      console.warn(`Failed to add layer ${layer.id}:`, err);
-      return; // Don't update UI if SDK call failed
+    // Turn on
+    try { await viewAdd(activeViewId); } catch (err) {
+      console.warn(`Failed to add view ${activeViewId}:`, err);
+      return;
     }
-    store.openViews.add(layer.id);
+    store.openViews.add(activeViewId);
     eyeBtn.classList.add("is-active");
     eyeBtn.setAttribute("aria-pressed", "true");
     wrapper.classList.add("layer-active");
 
-    // Expand accordion to show controls
+    // Expand accordion
     const body = wrapper.querySelector(".layer-body");
     const header = wrapper.querySelector(".layer-header");
     const arrow = wrapper.querySelector(".layer-arrow");
@@ -248,9 +270,55 @@ async function toggleLayer(layer, eyeBtn, wrapper) {
     arrow.textContent = "\u25BC";
     header.setAttribute("aria-expanded", "true");
 
-    addOpacitySlider(layer.id, sliderSlot);
-    addLegend(layer, legendSlot);
+    // Build source-switching widget for compound layers
+    if (compound && layer.widget) {
+      const widgetEl = buildWidget(
+        layer.widget, layer.sources, activeIdx,
+        (newIdx) => switchSource(layer, key, newIdx, sliderSlot, legendSlot),
+      );
+      if (widgetEl) widgetSlot.appendChild(widgetEl);
+    }
+
+    addOpacitySlider(activeViewId, sliderSlot);
+    // For compound layers, merge the active source's fields (desc, legend)
+    // onto the parent layer so addLegend sees the right data.
+    const legendLayer = compound
+      ? { ...layer, ...layer.sources[activeIdx], label: layer.label }
+      : layer;
+    addLegend(legendLayer, legendSlot);
   }
+}
+
+/**
+ * Switch between sources within a compound layer.
+ * Removes the old view, adds the new one, and rebuilds controls.
+ */
+async function switchSource(layer, key, newIdx, sliderSlot, legendSlot) {
+  const oldIdx = store.getActiveSource(key);
+  const oldId = layer.sources[oldIdx].id;
+  const newId = layer.sources[newIdx].id;
+  if (oldId === newId) return;
+
+  // Remove old, add new
+  try { await viewRemove(oldId); } catch (e) { console.warn(e); }
+  store.openViews.delete(oldId);
+
+  try { await viewAdd(newId); } catch (e) {
+    // Rollback: re-add old view if new one fails
+    console.warn(`Failed to switch to source ${newIdx}:`, e);
+    try { await viewAdd(oldId); store.openViews.add(oldId); } catch { /* */ }
+    return;
+  }
+  store.openViews.add(newId);
+  store.setActiveSource(key, newIdx);
+
+  // Rebuild opacity slider and legend for the new source
+  sliderSlot.innerHTML = "";
+  addOpacitySlider(newId, sliderSlot);
+
+  legendSlot.innerHTML = "";
+  const legendLayer = { ...layer, ...layer.sources[newIdx], label: layer.label };
+  addLegend(legendLayer, legendSlot);
 }
 
 async function addOpacitySlider(idView, container) {
