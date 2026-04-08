@@ -95,7 +95,7 @@ function switchTab(tabId) {
 
   // Toggle map vs full-page info view
   appMap.style.display = isInfoTab ? "none" : "";
-  infoPage.style.display = isInfoTab ? "" : "none";
+  infoPage.style.display = isInfoTab ? "block" : "none";
 
   // Active state on all nav links
   for (const link of document.querySelectorAll(".nav-tab-link")) {
@@ -111,7 +111,7 @@ function switchTab(tabId) {
     // Show the right info panel, hide the others
     for (const id of INFO_TABS) {
       const el = document.getElementById(`tab-${id}`);
-      if (el) el.style.display = el.id === `tab-${tabId}` ? "" : "none";
+      if (el) el.style.display = el.id === `tab-${tabId}` ? "block" : "none";
     }
   } else {
     // Show the right layer panel in the sidebar, hide the others

@@ -20,6 +20,7 @@ export function validateLayers(tabs) {
 
     for (const layer of tab.layers) {
       const ctx = `[${tab.id}] "${layer.label || "(no label)"}"`;
+      const compound = Array.isArray(layer.sources) && layer.sources.length > 0;
 
       if (!layer.label) {
         errors.push(`${ctx} -- missing label`);
@@ -29,9 +30,29 @@ export function validateLayers(tabs) {
         errors.push(`${ctx} -- invalid type "${layer.type}" (expected: ${VALID_TYPES.join(", ")})`);
       }
 
-      // Enabled layers must have a string ID
-      if (!layer.disabled && (typeof layer.id !== "string" || !layer.id)) {
-        errors.push(`${ctx} -- enabled layer missing id`);
+      if (compound) {
+        // Compound layer: validate sources and widget
+        if (!layer.widget || !layer.widget.type) {
+          errors.push(`${ctx} -- compound layer missing widget.type`);
+        }
+        for (let s = 0; s < layer.sources.length; s++) {
+          const src = layer.sources[s];
+          if (!src.id || typeof src.id !== "string") {
+            errors.push(`${ctx} -- sources[${s}] missing id`);
+          }
+          if (!src.label) {
+            errors.push(`${ctx} -- sources[${s}] missing label`);
+          }
+          if (src.id && seenIds.has(src.id)) {
+            console.warn(`Layer config: ${ctx} sources[${s}] reuses id "${src.id}"`);
+          }
+          if (src.id) seenIds.add(src.id);
+        }
+      } else {
+        // Simple layer: must have a string ID (unless disabled)
+        if (!layer.disabled && (typeof layer.id !== "string" || !layer.id)) {
+          errors.push(`${ctx} -- enabled layer missing id`);
+        }
       }
 
       // Warn on duplicate IDs (same view in multiple tabs is valid but notable)
