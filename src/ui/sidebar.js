@@ -9,49 +9,52 @@ import {
 const TYPE_LABELS = { cc: "live", rt: "raster", vt: "vector" };
 
 /**
- * Build the full sidebar: tab buttons + accordion layer panels.
+ * Build the floating layer panel and wire up the nav-bar category tabs.
  */
 export function buildSidebar() {
-  const sidebar = document.getElementById("sidebar");
+  const body = document.getElementById("panel-body");
+  const panel = document.getElementById("sidebar");
+  const toggle = document.getElementById("panel-toggle");
 
-  // Tab bar
-  const tabBar = document.createElement("div");
-  tabBar.className = "tab-bar";
-  for (const tab of TABS) {
-    const btn = document.createElement("button");
-    btn.className = "tab-btn mg-button";
-    btn.textContent = tab.label;
-    btn.dataset.tab = tab.id;
-    if (tab.id === store.activeTab) btn.classList.add("is-active");
-    btn.addEventListener("click", () => switchTab(tab.id));
-    tabBar.appendChild(btn);
-  }
-  sidebar.appendChild(tabBar);
+  // Collapse / expand
+  toggle.addEventListener("click", () => {
+    panel.classList.toggle("is-collapsed");
+  });
 
-  // Tab panels
+  // Layer panels (one per tab category)
   for (const tab of TABS) {
-    const panel = document.createElement("div");
-    panel.className = "tab-panel";
-    panel.id = `tab-${tab.id}`;
-    panel.style.display = tab.id === store.activeTab ? "block" : "none";
+    const tabPanel = document.createElement("div");
+    tabPanel.className = "tab-panel";
+    tabPanel.id = `tab-${tab.id}`;
+    tabPanel.style.display = tab.id === store.activeTab ? "block" : "none";
 
     for (const layer of tab.layers) {
-      panel.appendChild(buildLayerAccordion(layer));
+      tabPanel.appendChild(buildLayerAccordion(layer));
     }
 
-    sidebar.appendChild(panel);
+    body.appendChild(tabPanel);
+  }
+
+  // Wire up nav-bar category links
+  for (const link of document.querySelectorAll(".nav-tab-link")) {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      switchTab(link.dataset.tab);
+      // Expand panel if collapsed
+      panel.classList.remove("is-collapsed");
+    });
   }
 }
 
 function switchTab(tabId) {
   store.setActiveTab(tabId);
 
-  // Update tab buttons
-  for (const btn of document.querySelectorAll(".tab-btn")) {
-    btn.classList.toggle("is-active", btn.dataset.tab === tabId);
+  // Update nav-bar active state
+  for (const link of document.querySelectorAll(".nav-tab-link")) {
+    link.classList.toggle("is-active", link.dataset.tab === tabId);
   }
 
-  // Show/hide panels
+  // Show/hide layer panels
   for (const panel of document.querySelectorAll(".tab-panel")) {
     panel.style.display = panel.id === `tab-${tabId}` ? "block" : "none";
   }
@@ -68,6 +71,7 @@ function buildLayerAccordion(layer) {
   const arrow = document.createElement("span");
   arrow.className = "layer-arrow";
   arrow.textContent = "\u25B6"; // ▶
+  arrow.setAttribute("aria-hidden", "true");
   header.appendChild(arrow);
 
   const label = document.createElement("span");
@@ -85,7 +89,9 @@ function buildLayerAccordion(layer) {
   if (!layer.disabled) {
     const eyeBtn = document.createElement("button");
     eyeBtn.className = "layer-eye";
-    eyeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    eyeBtn.setAttribute("aria-label", `Toggle ${layer.label}`);
+    eyeBtn.setAttribute("aria-pressed", "false");
+    eyeBtn.innerHTML = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
     eyeBtn.title = "Toggle layer";
     eyeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -120,12 +126,25 @@ function buildLayerAccordion(layer) {
 
   wrapper.appendChild(body);
 
-  // Toggle accordion on header click (not eye button)
+  // Toggle accordion on header click or Enter/Space
   if (!layer.disabled) {
-    header.addEventListener("click", () => {
+    header.tabIndex = 0;
+    header.setAttribute("role", "button");
+    header.setAttribute("aria-expanded", "false");
+
+    const toggleAccordion = () => {
       const open = body.style.display !== "none";
       body.style.display = open ? "none" : "block";
       arrow.textContent = open ? "\u25B6" : "\u25BC"; // ▶ / ▼
+      header.setAttribute("aria-expanded", String(!open));
+    };
+
+    header.addEventListener("click", toggleAccordion);
+    header.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleAccordion();
+      }
     });
   }
 
@@ -137,23 +156,36 @@ async function toggleLayer(layer, eyeBtn, wrapper) {
   const legendSlot = wrapper.querySelector(".layer-legend-slot");
 
   if (store.openViews.has(layer.id)) {
-    await viewRemove(layer.id);
+    try {
+      await viewRemove(layer.id);
+    } catch (err) {
+      console.warn(`Failed to remove layer ${layer.id}:`, err);
+    }
     store.openViews.delete(layer.id);
     eyeBtn.classList.remove("is-active");
+    eyeBtn.setAttribute("aria-pressed", "false");
     wrapper.classList.remove("layer-active");
     sliderSlot.innerHTML = "";
     legendSlot.innerHTML = "";
   } else {
-    await viewAdd(layer.id);
+    try {
+      await viewAdd(layer.id);
+    } catch (err) {
+      console.warn(`Failed to add layer ${layer.id}:`, err);
+      return; // Don't update UI if SDK call failed
+    }
     store.openViews.add(layer.id);
     eyeBtn.classList.add("is-active");
+    eyeBtn.setAttribute("aria-pressed", "true");
     wrapper.classList.add("layer-active");
 
     // Expand accordion to show controls
     const body = wrapper.querySelector(".layer-body");
+    const header = wrapper.querySelector(".layer-header");
     const arrow = wrapper.querySelector(".layer-arrow");
     body.style.display = "block";
     arrow.textContent = "\u25BC";
+    header.setAttribute("aria-expanded", "true");
 
     addOpacitySlider(layer.id, sliderSlot);
     addLegend(layer, legendSlot);

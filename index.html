@@ -36,42 +36,72 @@
                 />
               </a>
             </section>
-            <section class="mg-page-header__block">
-              <span style="color: #fff; font-size: 0.875rem; font-weight: 600"
-                >Risk to Resilience Map</span
-              >
-              <span id="status" class="status-badge" style="margin-left: 0.5rem"
-                >Connecting...</span
-              >
-            </section>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- App layout: sidebar + map -->
-    <div class="app-layout">
-      <aside class="app-sidebar" id="sidebar">
-        <div class="app-sidebar-header">
-          <h2>Layers</h2>
-          <p class="mg-form-help">
-            Toggle layers by category. Click the map for feature details.
-          </p>
-        </div>
-      </aside>
+    <!-- Category navigation bar -->
+    <nav class="mg-mega-wrapper" aria-label="Map navigation">
+      <ul
+        class="mg-mega-topbar | mg-container-full-width"
+        role="menubar"
+        aria-label="Map category menu"
+      >
+        <li class="mg-mega-topbar__item" role="none">
+          <a href="#" role="menuitem" class="mg-mega-topbar__item-link nav-home-link">
+            Risk to Resilience Map
+          </a>
+        </li>
+        <li class="mg-mega-topbar__item" role="none">
+          <a href="#hazard" role="menuitem" class="mg-mega-topbar__item-link nav-tab-link is-active" data-tab="hazard">
+            Hazard
+          </a>
+        </li>
+        <li class="mg-mega-topbar__item" role="none">
+          <a href="#exposure" role="menuitem" class="mg-mega-topbar__item-link nav-tab-link" data-tab="exposure">
+            Exposure
+          </a>
+        </li>
+        <li class="mg-mega-topbar__item" role="none">
+          <a href="#vulnerability" role="menuitem" class="mg-mega-topbar__item-link nav-tab-link" data-tab="vulnerability">
+            Vulnerability
+          </a>
+        </li>
+        <li class="mg-mega-topbar__item" role="none">
+          <a href="#risk" role="menuitem" class="mg-mega-topbar__item-link nav-tab-link" data-tab="risk">
+            Risk
+          </a>
+        </li>
+        <li class="mg-mega-topbar__item nav-status-item" role="none">
+          <span id="status" class="status-badge">Connecting...</span>
+        </li>
+      </ul>
+    </nav>
 
-      <main class="app-map">
-        <div id="mapx" style="width: 100%; height: 100%"></div>
+    <!-- App layout: full-width map with floating layer panel -->
+    <div class="app-map">
+      <div id="mapx" style="width: 100%; height: 100%"></div>
 
-        <!-- Feature infobox (hidden by default) -->
-        <div id="infobox" class="infobox">
-          <div class="infobox-header">
-            <h3 class="infobox-title">Feature</h3>
-            <button class="infobox-close">&times;</button>
-          </div>
-          <div class="infobox-body"></div>
+      <!-- Floating layer panel -->
+      <div class="layer-panel" id="sidebar">
+        <div class="layer-panel-header">
+          <span class="layer-panel-title">Layers</span>
+          <button class="layer-panel-toggle" id="panel-toggle" aria-label="Collapse panel">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
         </div>
-      </main>
+        <div class="layer-panel-body" id="panel-body"></div>
+      </div>
+
+      <!-- Feature infobox (hidden by default) -->
+      <div id="infobox" class="infobox">
+        <div class="infobox-header">
+          <h3 class="infobox-title">Feature</h3>
+          <button class="infobox-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="infobox-body"></div>
+      </div>
     </div>
 
     <!-- MapX SDK must load before module script -->

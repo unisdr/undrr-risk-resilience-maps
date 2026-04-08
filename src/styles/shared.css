@@ -1,79 +1,159 @@
 /* ── Layout ────────────────────────────────────────── */
 
-.app-layout {
-  display: flex;
-  height: calc(100vh - 3.5rem); /* below UNDRR header */
-}
-
-.app-sidebar {
-  width: 22rem;
-  min-width: 22rem;
-  overflow-y: auto;
-  border-right: 1px solid #ccc;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-}
-
-.app-sidebar-header {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #eee;
-}
-
-.app-sidebar-header h2 {
-  font-size: 1rem;
-  margin: 0 0 0.25rem 0;
+:root {
+  --header-height: 3.5rem;
+  --nav-height: 2.75rem;
+  --color-primary: #004f91;
+  --color-primary-light: #f0f6fc;
+  --color-text: #333;
+  --color-text-muted: #666;
+  --color-border: #ddd;
+  --color-border-light: #eee;
+  --z-panel: 10;
+  --z-infobox: 20;
 }
 
 .app-map {
-  flex: 1;
   position: relative;
-  min-width: 0;
+  height: calc(100vh - var(--header-height) - var(--nav-height));
+}
+
+/* ── Navigation bar ───────────────────────────────── */
+
+.nav-home-link {
+  font-weight: 700 !important;
+}
+
+.nav-tab-link.is-active {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+.nav-status-item {
+  margin-left: auto;
+}
+
+/* ── Reduced motion ───────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ── Mobile ───────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .layer-panel {
+    width: calc(100vw - 1.5rem);
+    max-width: 20rem;
+  }
+  .infobox {
+    max-width: calc(100vw - 1.5rem);
+  }
+}
+
+/* ── Floating layer panel ─────────────────────────── */
+
+.layer-panel {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: var(--z-panel);
+  width: 20rem;
+  max-height: calc(100% - 1.5rem);
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.2s ease;
+}
+
+.layer-panel.is-collapsed {
+  width: auto;
+}
+
+.layer-panel.is-collapsed .layer-panel-body {
+  display: none;
+}
+
+.layer-panel.is-collapsed .layer-panel-title {
+  display: none;
+}
+
+.layer-panel.is-collapsed .layer-panel-toggle svg {
+  transform: rotate(180deg);
+}
+
+.layer-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+}
+
+.layer-panel.is-collapsed .layer-panel-header {
+  border-bottom: none;
+  padding: 0.4rem;
+}
+
+.layer-panel-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.layer-panel-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #666;
+}
+
+.layer-panel-toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.layer-panel-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.layer-panel-toggle svg {
+  transition: transform 0.2s ease;
+}
+
+.layer-panel-body {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 /* ── Status ────────────────────────────────────────── */
 
 .status-badge {
   font-size: 0.75rem;
-  color: #999;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .status-badge.status-ok {
-  color: #2e7d32;
+  color: #8fdf93;
 }
 
-/* ── Tab bar ───────────────────────────────────────── */
-
-.tab-bar {
-  display: flex;
-  border-bottom: 2px solid #eee;
-  padding: 0;
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 0.5rem 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-align: center;
-  border: none;
-  border-bottom: 3px solid transparent;
-  background: transparent;
-  cursor: pointer;
-  color: #666;
-  transition: color 0.15s, border-color 0.15s;
-}
-
-.tab-btn:hover {
-  color: #004f91;
-}
-
-.tab-btn.is-active {
-  color: #004f91;
-  border-bottom-color: #004f91;
-}
-
-/* ── Tab panels ────────────────────────────────────── */
+/* ── Tab panels (inside floating panel) ───────────── */
 
 .tab-panel {
   padding: 0;
@@ -142,14 +222,24 @@
 }
 
 .layer-eye:hover {
-  border-color: #004f91;
-  color: #004f91;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.layer-eye:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .layer-eye.is-active {
-  background: #004f91;
-  border-color: #004f91;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #fff;
+}
+
+.layer-header:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
 }
 
 /* ── Layer body (expanded) ─────────────────────────── */
@@ -245,7 +335,7 @@
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  z-index: 20;
+  z-index: var(--z-infobox);
   background: #fff;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
@@ -275,8 +365,19 @@
   cursor: pointer;
   font-size: 1rem;
   color: #999;
-  padding: 0;
+  padding: 0.25rem;
   line-height: 1;
+  border-radius: 3px;
+}
+
+.infobox-close:hover {
+  color: var(--color-primary);
+  background: #f0f0f0;
+}
+
+.infobox-close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .infobox-body {

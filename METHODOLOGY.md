@@ -59,7 +59,7 @@ curl 'https://search.mapx.org:443/indexes/views_en/search' \
   --data-raw '{"q":"flood hazard","limit":10}'
 ```
 
-Response hits include `view_id`, `title`, `project_id`, and `abstract`. API key can be obtained from Pierre. Also documented in the [MapX SDK skill](../mapx-llm-skills/) limitations section.
+Response hits include `view_id`, `title`, `project_id`, and `abstract`. API key can be obtained from the MapX platform contact at GRID-Geneva.
 
 ### SDK probe vs MeiliSearch
 

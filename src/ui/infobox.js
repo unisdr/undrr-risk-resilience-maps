@@ -70,9 +70,16 @@ export function showInfobox(data) {
   }
 
   box.style.display = "block";
-  if (closeBtn) {
-    closeBtn.onclick = () => {
-      box.style.display = "none";
-    };
-  }
+
+  const close = () => { box.style.display = "none"; };
+  if (closeBtn) closeBtn.onclick = close;
+
+  // ESC key dismisses the infobox
+  const onKey = (e) => {
+    if (e.key === "Escape") {
+      close();
+      document.removeEventListener("keydown", onKey);
+    }
+  };
+  document.addEventListener("keydown", onKey);
 }

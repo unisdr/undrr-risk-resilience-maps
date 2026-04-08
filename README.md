@@ -4,6 +4,13 @@ A MapX-based geospatial explorer for UNDRR. Replicates the [GRI Risk Viewer](htt
 
 ## Developing
 
+```bash
+npm install
+npm run dev        # Vite dev server at http://localhost:3001
+npm run build      # Production build to dist/
+npm run preview    # Preview production build
+```
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for workflow conventions (PRs, conventional commits, changelog).
 
 ### Claude Code
@@ -16,10 +23,10 @@ Keep these files updated as the project evolves:
 
 - [PRD.md](PRD.md) -- product requirements, scope, blockers, and timeline
 - [ARCHITECTURE.md](ARCHITECTURE.md) -- system design and technical decisions
-- [METHODOLOGY.md](METHODOLOGY.md) -- approach and rationale (stub; will be populated at build phase)
+- [METHODOLOGY.md](METHODOLOGY.md) -- MapX API/SDK discovery approach and research methods
 - [CHANGELOG.md](CHANGELOG.md) -- notable changes ([Common Changelog](https://common-changelog.org/) format)
 - [research/](research/) -- GRI UX analysis, layer inventory, MapX crosswalk, implementation patterns
 
 ## Status
 
-**Planning** -- no code yet. Requirements gathering and research in progress. Dev setup instructions will be added when the build phase starts.
+**MVP scaffold** -- working app with MapX SDK integration, Mangrove nav bar with category tabs, floating layer panel with accordion controls, per-layer opacity sliders, legend rendering, and feature click popups. See [CHANGELOG.md](CHANGELOG.md) for details.

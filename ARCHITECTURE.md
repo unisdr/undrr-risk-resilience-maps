@@ -8,7 +8,7 @@
 
 Static site, no backend. The app embeds MapX in an iframe via the SDK's postMessage bridge and wraps it in a sidebar UI styled with Mangrove. See the [PRD](PRD.md) for what we're building; this doc covers how.
 
-## Proposed structure
+## Structure
 
 ```
 undrr-risk-resilience-maps/
@@ -46,9 +46,11 @@ Browser tab
         └── communicates via postMessage ↕
 ```
 
-### Tabbed layer model
+### Navigation and layer panel
 
-Layers are organised into sidebar tabs matching the Risk & Resilience framework categories (Hazard, Exposure, Vulnerability, Risk). Each tab renders a list of toggleable layers with per-layer controls (sliders, dropdowns, opacity). See [research/gri-ux-analysis.md](research/gri-ux-analysis.md) for the full breakdown of control widget types. Layer definitions live in `src/config/`.
+Category tabs (Hazard, Exposure, Vulnerability, Risk) live in a Mangrove `mg-mega-topbar` navigation bar below the page header. The nav bar uses the Simple Nav variant from the [Mangrove MegaMenu component](https://unisdr.github.io/undrr-mangrove/?path=/docs/components-megamenu--docs) -- plain HTML links, no React.
+
+Layers for the active category appear in a floating panel positioned over the top-left of the map. The panel is collapsible and scrollable, with per-layer accordion controls (opacity sliders, legends). Layer definitions live in `src/config/`.
 
 ### State management
 
@@ -61,12 +63,12 @@ Plain ES module exports with setter functions, no framework. Lightweight enough 
 
 ### UI layer (Mangrove)
 
-All styling builds on the [UNDRR Mangrove component library](https://assets.undrr.org/testing/static/mangrove/) (CSS only, no JS framework). Components used:
+All styling builds on the [UNDRR Mangrove component library](https://assets.undrr.org/static/mangrove/1.4.0/css/style.css) (CSS only, no JS framework). Components used:
 
-- `mg-page-header` — UNDRR branding bar
+- `mg-page-header` — UNDRR branding bar with Sendai stripe
+- `mg-mega-topbar` — category navigation bar (Simple Nav variant)
 - `mg-button` / `mg-tag` — interactive controls and layer type badges
-- `mg-card` — metadata panels
-- `mg-container` / `mg-grid` — responsive layout
+- `mg-container` — centred layout
 - Utility classes (`mg-u-*`) for spacing, colour, typography
 
 ### Feature popups and click handling
