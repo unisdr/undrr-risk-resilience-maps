@@ -13,6 +13,7 @@ import {
   setViewLayerTransparency,
   getViewLayerTransparency,
 } from "../sdk/filters.js";
+import { buildHomePanel } from "./home.js";
 
 // MapX view types: cc = custom coded (live), rt = raster tile, vt = vector tile
 const TYPE_LABELS = { cc: "live", rt: "raster", vt: "vector" };
@@ -24,24 +25,38 @@ export function buildSidebar() {
   const body = document.getElementById("panel-body");
   const panel = document.getElementById("sidebar");
   const toggle = document.getElementById("panel-toggle");
+  const panelTitle = document.getElementById("panel-title");
 
   // Collapse / expand
   toggle.addEventListener("click", () => {
     panel.classList.toggle("is-collapsed");
   });
 
+  // Home panel (default view)
+  body.appendChild(buildHomePanel());
+
   // Layer panels (one per tab category)
   for (const tab of TABS) {
     const tabPanel = document.createElement("div");
     tabPanel.className = "tab-panel";
     tabPanel.id = `tab-${tab.id}`;
-    tabPanel.style.display = tab.id === store.activeTab ? "block" : "none";
+    tabPanel.style.display = "none";
 
     for (const layer of tab.layers) {
       tabPanel.appendChild(buildLayerAccordion(layer));
     }
 
     body.appendChild(tabPanel);
+  }
+
+  // Wire up nav-bar home link
+  const homeLink = document.querySelector(".nav-home-link");
+  if (homeLink) {
+    homeLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      switchTab("home");
+      panel.classList.remove("is-collapsed");
+    });
   }
 
   // Wire up nav-bar category links
@@ -53,17 +68,30 @@ export function buildSidebar() {
       panel.classList.remove("is-collapsed");
     });
   }
+
+  // Set initial state
+  switchTab(store.activeTab);
 }
 
 function switchTab(tabId) {
   store.setActiveTab(tabId);
 
-  // Update nav-bar active state
+  const panelTitle = document.getElementById("panel-title");
+  if (panelTitle) {
+    panelTitle.textContent = tabId === "home" ? "About" : "Layers";
+  }
+
+  // Update nav-bar active state (home link has no data-tab)
   for (const link of document.querySelectorAll(".nav-tab-link")) {
     link.classList.toggle("is-active", link.dataset.tab === tabId);
   }
+  const homeLink = document.querySelector(".nav-home-link");
+  if (homeLink) {
+    homeLink.classList.toggle("is-active", tabId === "home");
+  }
 
-  // Show/hide layer panels
+  // Show/hide panels
+  document.getElementById("tab-home").style.display = tabId === "home" ? "block" : "none";
   for (const panel of document.querySelectorAll(".tab-panel")) {
     panel.style.display = panel.id === `tab-${tabId}` ? "block" : "none";
   }
