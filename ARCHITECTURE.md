@@ -81,7 +81,7 @@ Browser tab
 
 ### Navigation and layer panel
 
-Category tabs (Hazard, Exposure, Vulnerability, Risk) live in a Mangrove `mg-mega-topbar` navigation bar below the page header. The nav bar uses the Simple Nav variant from the [Mangrove MegaMenu component](https://unisdr.github.io/undrr-mangrove/?path=/docs/components-megamenu--docs) -- plain HTML links, no React.
+Category tabs (Hazard, Exposure, Vulnerability, Risk) live in a Mangrove `mg-mega-topbar` navigation bar below the page header. The nav bar uses the Simple Nav variant from the [Mangrove MegaMenu component](https://unisdr.github.io/undrr-mangrove/?path=/docs/components-megamenu--docs) — plain HTML links, no React.
 
 Layers for the active category appear in a floating panel positioned over the top-left of the map. The panel is collapsible and scrollable, with per-layer accordion controls (opacity sliders, legends). Layer definitions live in `src/config/layers/`, split by category.
 
@@ -120,8 +120,8 @@ Plain ES module exports with setter functions, no framework. Lightweight enough 
 
 **Terminology note:** in the MapX SDK, a dataset on the map is called a "view." In our UI and docs, we call them "layers" (what the user sees). The code uses both: `openViews` is the SDK-facing set, but UI labels say "layer."
 
-- `openViews` (Set) -- tracks which MapX views (layers) are currently active
-- `activeSourceIndex` (Map) -- for compound layers, tracks which source is selected
+- `openViews` (Set) — tracks which MapX views (layers) are currently active
+- `activeSourceIndex` (Map) — for compound layers, tracks which source is selected
 - Per-tab state: visibility, opacity, filter values
 
 ### UI layer (Mangrove)

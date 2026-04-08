@@ -70,7 +70,7 @@ Response hits include `view_id`, `title`, `project_id`, and `abstract`. API key 
 
 The probe script writes to `research/`:
 
-- `mapx-views-eco-drr.json` / `.csv` -- 85 views from Eco-DRR project
-- `mapx-views-home.json` / `.csv` -- 22 views from HOME project
+- `mapx-views-eco-drr.json` / `.csv` — 85 views from Eco-DRR project
+- `mapx-views-home.json` / `.csv` — 22 views from HOME project
 
 These are raw dumps used to build the [crosswalk](research/gri-mapx-crosswalk.csv).
