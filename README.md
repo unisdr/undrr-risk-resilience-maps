@@ -2,6 +2,14 @@
 
 A MapX-based geospatial explorer for UNDRR. Replicates the [GRI Risk Viewer](https://global.infrastructureresilience.org) interaction model with UNDRR branding, tied to the Risk & Resilience Metrics framework. See [PRD.md](PRD.md) for requirements, scope, and timeline.
 
+## Preview access
+
+The app is protected by a PIN gate to keep out casual visitors and signal that this is a work-in-progress prototype.
+
+**PIN: `5498`**
+
+The gate stores auth state in `sessionStorage`, so it only asks once per browser tab session. This is not a security mechanism — it is purely a soft barrier to set expectations for reviewers.
+
 ## Developing
 
 ```bash

@@ -11,7 +11,163 @@
   --color-border-light: #eee;
   --z-panel: 10;
   --z-infobox: 20;
+  --z-pin-gate: 9999;
 }
+
+/* ── PIN gate overlay ──────────────────────────────── */
+
+.pin-gate {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-pin-gate);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #003a6b 0%, #004f91 50%, #00614e 100%);
+  padding: 1rem;
+}
+
+.pin-gate--unlocking {
+  animation: pin-gate-fade-out 0.4s ease forwards;
+}
+
+@keyframes pin-gate-fade-out {
+  to { opacity: 0; pointer-events: none; }
+}
+
+.pin-gate__card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  padding: 2rem 2.5rem 2.25rem;
+  max-width: 24rem;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.pin-gate__badge {
+  display: inline-block;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.pin-gate__logo {
+  display: block;
+  margin-bottom: 1.25rem;
+  max-width: 180px;
+  height: auto;
+}
+
+.pin-gate__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 0.3rem;
+  line-height: 1.25;
+}
+
+.pin-gate__subtitle {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem;
+}
+
+.pin-gate__notice {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 4px;
+  font-size: 0.73rem;
+  color: #5d4037;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  line-height: 1.45;
+  margin-bottom: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pin-gate__prompt {
+  font-size: 0.85rem;
+  color: var(--color-text);
+  margin: 0 0 0.75rem;
+}
+
+.pin-gate__input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.pin-gate__input {
+  width: 6.5rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 1.3rem;
+  letter-spacing: 0.3em;
+  text-align: center;
+  border: 2px solid var(--color-border);
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.pin-gate__input:focus {
+  border-color: var(--color-primary);
+}
+
+.pin-gate__input[aria-invalid="true"] {
+  border-color: #c62828;
+  animation: pin-shake 0.35s ease;
+}
+
+@keyframes pin-shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-5px); }
+  75%       { transform: translateX(5px); }
+}
+
+.pin-gate__btn {
+  padding: 0.55rem 1.25rem;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.pin-gate__btn:hover {
+  background: #003d72;
+}
+
+.pin-gate__btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.pin-gate__error {
+  margin: 0.6rem 0 0;
+  font-size: 0.78rem;
+  color: #c62828;
+}
+
 
 .app-map {
   position: relative;
