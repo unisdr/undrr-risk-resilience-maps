@@ -5,14 +5,23 @@
  * for the expected schema. To add a new layer, edit the relevant category
  * file -- no changes to UI code should be needed.
  *
- * Layer fields:
- *   id       - MapX view ID (null for "coming soon" layers)
+ * Simple layer fields:
+ *   id       - MapX view ID (null for "coming soon" / disabled layers)
  *   label    - Display name
  *   type     - "rt" (raster), "vt" (vector), or "cc" (custom coded / live)
  *   desc     - Short description shown when the layer accordion is expanded
  *   project  - MapX project ID that owns the view
  *   disabled - true = greyed out, not toggleable
  *   legend   - optional [{color, label}] array for local HTML legend override
+ *
+ * Compound layer fields (multiple switchable views under one accordion):
+ *   id       - null (real IDs live in sources)
+ *   sources  - [{id, label, desc?, legend?}] array of switchable views
+ *   widget   - {type, label} specifies the source-switching UI widget
+ *              type: "sub-tabs" (button bar) or "stepped-slider" (range input)
+ *   (all other fields same as simple layers)
+ *
+ * See ARCHITECTURE.md for details on the compound layer pattern.
  */
 import { HAZARD_LAYERS } from "./hazard.js";
 import { EXPOSURE_LAYERS } from "./exposure.js";

@@ -12,17 +12,33 @@ Static site, no backend. The app embeds MapX in an iframe via the SDK's postMess
 
 ```
 undrr-risk-resilience-maps/
-├── index.html                  # Landing / main entry
+├── index.html                  # Main entry
 ├── src/
-│   ├── config/                 # Layer definitions, tab structure, regions
+│   ├── config/
+│   │   ├── layers/             # Per-category layer definitions
+│   │   │   ├── index.js        # Assembles TABS array
+│   │   │   ├── projects.js     # MapX project IDs
+│   │   │   ├── hazard.js       # Compound + simple hazard layers
+│   │   │   ├── exposure.js
+│   │   │   ├── vulnerability.js
+│   │   │   └── risk.js
+│   │   └── validate.js         # Startup config validation
 │   ├── sdk/                    # MapX SDK wrapper modules
-│   ├── state/                  # Global state (open views, registries)
-│   ├── ui/                     # UI components (sidebar, popups, metadata)
-│   ├── lib/                    # Pure utility functions
-│   └── styles/                 # CSS (shared + page-specific)
-├── tests/
-│   ├── unit/                   # Vitest
-│   └── e2e/                    # Playwright
+│   ├── state/                  # Global state (open views, active sources)
+│   ├── ui/
+│   │   ├── sidebar.js          # Floating panel, accordion, toggle logic
+│   │   ├── widgets/            # Source-switching widgets (registry pattern)
+│   │   │   ├── index.js        # Widget registry + isCompound helper
+│   │   │   ├── sub-tabs.js     # Button bar for metric switching
+│   │   │   └── stepped-slider.js # Range slider for return periods
+│   │   ├── home.js             # About/overview panel
+│   │   ├── info-panels.js      # Guide, Sources, Downloads panels
+│   │   └── infobox.js          # Feature click popup
+│   └── styles/
+│       ├── shared.css          # CSS entry point (@imports)
+│       ├── tokens.css          # Design tokens (custom properties)
+│       └── components/         # Per-component CSS files
+├── .github/workflows/deploy.yml # GitHub Pages CI
 ├── vite.config.js
 ├── server.js                   # Static production server
 └── package.json
@@ -50,7 +66,36 @@ Browser tab
 
 Category tabs (Hazard, Exposure, Vulnerability, Risk) live in a Mangrove `mg-mega-topbar` navigation bar below the page header. The nav bar uses the Simple Nav variant from the [Mangrove MegaMenu component](https://unisdr.github.io/undrr-mangrove/?path=/docs/components-megamenu--docs) -- plain HTML links, no React.
 
-Layers for the active category appear in a floating panel positioned over the top-left of the map. The panel is collapsible and scrollable, with per-layer accordion controls (opacity sliders, legends). Layer definitions live in `src/config/`.
+Layers for the active category appear in a floating panel positioned over the top-left of the map. The panel is collapsible and scrollable, with per-layer accordion controls (opacity sliders, legends). Layer definitions live in `src/config/layers/`, split by category.
+
+### Simple vs compound layers
+
+A **simple layer** maps to one MapX view ID. A **compound layer** groups multiple related views under a single accordion item with a widget to switch between them. Only one source view is active on the map at a time.
+
+Compound layers are config-driven. The `sources` array lists the view IDs and labels; the `widget` object says how to render the switcher:
+
+```js
+{
+  id: null,
+  label: "Earthquake PGA",
+  type: "rt",
+  sources: [
+    { id: "MX-J3YTW-...", label: "250 yr" },
+    { id: "MX-4XSGY-...", label: "475 yr" },
+    // ...
+  ],
+  widget: { type: "stepped-slider", label: "Return period" },
+}
+```
+
+**Widget types** are registered in `src/ui/widgets/index.js`. Current types:
+
+| Type | UI | Use case |
+|---|---|---|
+| `sub-tabs` | Button bar | Switching between data metrics (depth / frequency / exposure) |
+| `stepped-slider` | Range input with tick labels | Selecting return periods or thresholds |
+
+To add a new widget type: create a factory function in `src/ui/widgets/`, register it in the index. No sidebar.js changes needed.
 
 ### State management
 
@@ -59,6 +104,7 @@ Plain ES module exports with setter functions, no framework. Lightweight enough 
 **Terminology note:** in the MapX SDK, a dataset on the map is called a "view." In our UI and docs, we call them "layers" (what the user sees). The code uses both: `openViews` is the SDK-facing set, but UI labels say "layer."
 
 - `openViews` (Set) -- tracks which MapX views (layers) are currently active
+- `activeSourceIndex` (Map) -- for compound layers, tracks which source is selected
 - Per-tab state: visibility, opacity, filter values
 
 ### UI layer (Mangrove)

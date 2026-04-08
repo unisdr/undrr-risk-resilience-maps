@@ -22,9 +22,11 @@ Until then, layers from non-primary projects (e.g. Land Cover from HOME) may not
 
 ## Widget event bus
 
-When we add more control widget types (dropdowns, date pickers, toggle groups), the widgets will need a way to communicate changes back to the SDK. Currently the opacity slider calls `setViewLayerTransparency()` directly. A lightweight event emitter pattern would decouple widgets from SDK calls and allow widget composition (e.g. a date range that also triggers a layer refresh).
+The compound layer system (`src/ui/widgets/`) uses a callback pattern: each widget calls `onSourceChange(index)` which the sidebar routes to `switchSource()`. This works for source switching but is tightly coupled -- the sidebar owns all SDK call logic.
 
-Not needed until the second widget type is added.
+If we add filter widgets that need to call SDK filter methods (e.g. `set_view_layer_filter_text`, `set_view_layer_filter_numeric`), a lightweight event emitter would decouple widgets from specific SDK calls. Each widget would emit `{ type, layerId, value }` events, and a central handler would dispatch to the right SDK method.
+
+Not blocking -- the current callback pattern works fine for source switching and opacity. Revisit when adding SDK filter widgets.
 
 ## Dual-panel map view
 
