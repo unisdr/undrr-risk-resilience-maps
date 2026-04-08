@@ -1,0 +1,92 @@
+/**
+ * Floating layer panel — container, header, collapse toggle.
+ */
+
+.layer-panel {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: var(--z-panel);
+  width: 20rem;
+  max-height: calc(100% - 1.5rem);
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.2s ease;
+}
+
+.layer-panel.is-collapsed {
+  width: auto;
+}
+
+.layer-panel.is-collapsed .layer-panel-body {
+  display: none;
+}
+
+.layer-panel.is-collapsed .layer-panel-title {
+  display: none;
+}
+
+.layer-panel.is-collapsed .layer-panel-toggle svg {
+  transform: rotate(180deg);
+}
+
+.layer-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+}
+
+.layer-panel.is-collapsed .layer-panel-header {
+  border-bottom: none;
+  padding: 0.4rem;
+}
+
+.layer-panel-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.layer-panel-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #666;
+}
+
+.layer-panel-toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.layer-panel-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.layer-panel-toggle svg {
+  transition: transform 0.2s ease;
+}
+
+.layer-panel-body {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.tab-panel {
+  padding: 0;
+}
