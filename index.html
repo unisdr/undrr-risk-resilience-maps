@@ -124,14 +124,17 @@
       </ul>
     </nav>
 
+    <!-- Info pages (home, guide, sources, downloads) — full-page, map hidden -->
+    <div id="info-page"><!-- populated by JS --></div>
+
     <!-- App layout: full-width map with floating layer panel -->
-    <div class="app-map">
+    <div class="app-map" id="app-map">
       <div id="mapx" style="width: 100%; height: 100%"></div>
 
       <!-- Floating layer panel -->
       <div class="layer-panel" id="sidebar">
         <div class="layer-panel-header">
-          <span class="layer-panel-title" id="panel-title">About</span>
+          <span class="layer-panel-title" id="panel-title">Layers</span>
           <button class="layer-panel-toggle" id="panel-toggle" aria-label="Collapse panel">
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           </button>

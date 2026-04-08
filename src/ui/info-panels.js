@@ -165,9 +165,8 @@ export function buildDownloadsPanel() {
 
 function buildPanel(id, innerHTML) {
   const el = document.createElement("div");
-  el.className = "home-panel";
+  el.className = "info-page-panel";
   el.id = id;
-  el.style.display = "none";
   el.innerHTML = innerHTML;
   return el;
 }

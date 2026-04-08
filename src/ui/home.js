@@ -36,7 +36,7 @@ const ROADMAP = [
 
 export function buildHomePanel() {
   const el = document.createElement("div");
-  el.className = "home-panel";
+  el.className = "info-page-panel";
   el.id = "tab-home";
 
   el.innerHTML = `

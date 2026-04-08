@@ -52,3 +52,21 @@
     max-width: calc(100vw - 1.5rem);
   }
 }
+
+/* ── Info page (home / guide / sources / downloads) ── */
+
+#info-page {
+  display: none;
+  width: 100%;
+  min-height: calc(100vh - var(--header-height) - var(--nav-height));
+  overflow-y: auto;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.info-page-panel {
+  display: none;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}

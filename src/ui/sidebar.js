@@ -1,10 +1,10 @@
 /**
- * Floating layer panel.
+ * Floating layer panel + info page routing.
  *
- * Builds the accordion UI for toggling map layers on/off, renders
- * per-layer controls (opacity slider, legend), and wires up the
- * nav-bar category tabs. Layer definitions come from config/layers.js;
- * this module is purely UI -- it doesn't know about specific datasets.
+ * - Data tabs (hazard / exposure / vulnerability / risk): show map + sidebar.
+ * - Info tabs (home / guide / sources / downloads): show full-page view, hide map.
+ *
+ * Layer definitions come from config/layers.js; this module is purely UI.
  */
 import { TABS } from "../config/layers.js";
 import * as store from "../state/store.js";
@@ -19,29 +19,29 @@ import { buildGuidePanel, buildSourcesPanel, buildDownloadsPanel } from "./info-
 // MapX view types: cc = custom coded (live), rt = raster tile, vt = vector tile
 const TYPE_LABELS = { cc: "live", rt: "raster", vt: "vector" };
 
+const INFO_TABS = ["home", "guide", "sources", "downloads"];
+
 /**
- * Build the floating layer panel and wire up the nav-bar category tabs.
+ * Build the UI and wire up all nav links.
  */
 export function buildSidebar() {
-  const body = document.getElementById("panel-body");
+  const sidebarBody = document.getElementById("panel-body");
   const panel = document.getElementById("sidebar");
   const toggle = document.getElementById("panel-toggle");
-  const panelTitle = document.getElementById("panel-title");
+  const infoPage = document.getElementById("info-page");
 
-  // Collapse / expand
+  // Collapse / expand sidebar
   toggle.addEventListener("click", () => {
     panel.classList.toggle("is-collapsed");
   });
 
-  // Home panel (default view)
-  body.appendChild(buildHomePanel());
+  // Populate info page with all info panels
+  infoPage.appendChild(buildHomePanel());
+  infoPage.appendChild(buildGuidePanel());
+  infoPage.appendChild(buildSourcesPanel());
+  infoPage.appendChild(buildDownloadsPanel());
 
-  // Info panels (Guide, Sources, Downloads)
-  body.appendChild(buildGuidePanel());
-  body.appendChild(buildSourcesPanel());
-  body.appendChild(buildDownloadsPanel());
-
-  // Layer panels (one per tab category)
+  // Populate sidebar with layer panels (data tabs only)
   for (const tab of TABS) {
     const tabPanel = document.createElement("div");
     tabPanel.className = "tab-panel";
@@ -52,29 +52,27 @@ export function buildSidebar() {
       tabPanel.appendChild(buildLayerAccordion(layer));
     }
 
-    body.appendChild(tabPanel);
+    sidebarBody.appendChild(tabPanel);
   }
 
-  // Wire up nav-bar home link
+  // Wire nav home link
   const homeLink = document.querySelector(".nav-home-link");
   if (homeLink) {
     homeLink.addEventListener("click", (e) => {
       e.preventDefault();
       switchTab("home");
-      panel.classList.remove("is-collapsed");
     });
   }
 
-  // Wire up nav-bar info links (Guide, Sources, Downloads)
+  // Wire nav info links
   for (const link of document.querySelectorAll(".nav-info-link")) {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       switchTab(link.dataset.panel);
-      panel.classList.remove("is-collapsed");
     });
   }
 
-  // Wire up nav-bar category links
+  // Wire nav category links
   for (const link of document.querySelectorAll(".nav-tab-link")) {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -91,15 +89,15 @@ export function buildSidebar() {
 function switchTab(tabId) {
   store.setActiveTab(tabId);
 
-  const panelTitle = document.getElementById("panel-title");
-  const INFO_PANELS = ["guide", "sources", "downloads"];
-  const isInfo = INFO_PANELS.includes(tabId);
-  const titleMap = { home: "About", guide: "Guide", sources: "Sources", downloads: "Downloads" };
-  if (panelTitle) {
-    panelTitle.textContent = titleMap[tabId] ?? "Layers";
-  }
+  const appMap = document.getElementById("app-map");
+  const infoPage = document.getElementById("info-page");
+  const isInfoTab = INFO_TABS.includes(tabId);
 
-  // Update active states
+  // Toggle map vs full-page info view
+  appMap.style.display = isInfoTab ? "none" : "";
+  infoPage.style.display = isInfoTab ? "" : "none";
+
+  // Active state on all nav links
   for (const link of document.querySelectorAll(".nav-tab-link")) {
     link.classList.toggle("is-active", link.dataset.tab === tabId);
   }
@@ -109,13 +107,17 @@ function switchTab(tabId) {
     link.classList.toggle("is-active", link.dataset.panel === tabId);
   }
 
-  // Show/hide panels
-  document.getElementById("tab-home").style.display = tabId === "home" ? "block" : "none";
-  for (const id of INFO_PANELS) {
-    document.getElementById(`tab-${id}`).style.display = tabId === id ? "block" : "none";
-  }
-  for (const panel of document.querySelectorAll(".tab-panel")) {
-    panel.style.display = panel.id === `tab-${tabId}` ? "block" : "none";
+  if (isInfoTab) {
+    // Show the right info panel, hide the others
+    for (const id of INFO_TABS) {
+      const el = document.getElementById(`tab-${id}`);
+      if (el) el.style.display = el.id === `tab-${tabId}` ? "" : "none";
+    }
+  } else {
+    // Show the right layer panel in the sidebar, hide the others
+    for (const panel of document.querySelectorAll(".tab-panel")) {
+      panel.style.display = panel.id === `tab-${tabId}` ? "block" : "none";
+    }
   }
 }
 
