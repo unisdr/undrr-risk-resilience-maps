@@ -41,21 +41,6 @@
   flex-shrink: 0;
 }
 
-.nav-status-item {
-  margin-left: 0.5rem;
-}
-
-/* ── Status badge (inside nav bar) ────────────────── */
-
-.status-badge {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.status-badge.status-ok {
-  color: #8fdf93;
-}
-
 /* ── Mobile ───────────────────────────────────────── */
 
 @media (max-width: 480px) {

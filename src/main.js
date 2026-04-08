@@ -19,9 +19,6 @@ validateLayers(TABS);
 const mapx = initSDK(document.getElementById("mapx"), PRIMARY_PROJECT);
 
 mapx.on("ready", async () => {
-  document.getElementById("status").textContent = "Connected";
-  document.getElementById("status").classList.add("status-ok");
-
   buildSidebar();
 
   // Enable click-to-inspect on vector features in the map
