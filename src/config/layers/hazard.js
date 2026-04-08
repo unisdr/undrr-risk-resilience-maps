@@ -3,6 +3,7 @@ import { ECO_DRR } from "./projects.js";
 export const HAZARD_LAYERS = [
   {
     id: null,
+    key: "river-flooding",
     label: "River Flooding",
     type: "rt",
     desc: "Flood hazard from the GAR model.",
@@ -39,6 +40,7 @@ export const HAZARD_LAYERS = [
   },
   {
     id: null,
+    key: "earthquake-pga",
     label: "Earthquake PGA",
     type: "rt",
     desc: "Peak Ground Acceleration from the GEM Global Seismic Hazard Map.",
@@ -54,6 +56,7 @@ export const HAZARD_LAYERS = [
   },
   {
     id: "MX-YLZJG-JAIID-V27X5",
+    key: "earthquakes-live",
     label: "Earthquakes (live)",
     type: "cc",
     desc: "USGS Mag >= 5.5, past 30 days. Updated every 15 min.",
@@ -61,6 +64,7 @@ export const HAZARD_LAYERS = [
   },
   {
     id: "MX-8C214-22C3A-82165",
+    key: "cyclone-surge",
     label: "Cyclone Surge Exposure",
     type: "rt",
     desc: "Annual physical exposure to surges from cyclones.",
@@ -68,6 +72,7 @@ export const HAZARD_LAYERS = [
   },
   {
     id: null,
+    key: "tropical-cyclones",
     label: "Tropical Cyclones",
     type: "rt",
     desc: "Cyclone wind speed and physical exposure.",
@@ -88,6 +93,7 @@ export const HAZARD_LAYERS = [
   },
   {
     id: null,
+    key: "landslides",
     label: "Landslides",
     type: "rt",
     desc: "Earthquake and precipitation triggered landslides.",
@@ -108,6 +114,7 @@ export const HAZARD_LAYERS = [
   },
   {
     id: null,
+    key: "tsunamis",
     label: "Tsunamis",
     type: "rt",
     desc: "Tsunami exposure and frequency.",

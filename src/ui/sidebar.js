@@ -16,6 +16,7 @@ import {
 import { buildHomePanel } from "./home.js";
 import { buildGuidePanel, buildSourcesPanel, buildDownloadsPanel } from "./info-panels.js";
 import { buildWidget, isCompound, compoundKey } from "./widgets/index.js";
+import { parseHash, writeHash } from "../state/hash.js";
 
 // MapX view types: cc = custom coded (live), rt = raster tile, vt = vector tile
 const TYPE_LABELS = { cc: "live", rt: "raster", vt: "vector" };
@@ -87,30 +88,20 @@ export function buildSidebar() {
   }
 
   // Read initial tab from URL hash, fall back to default
-  const initialTab = getTabFromHash() || store.activeTab;
+  const { tab: hashTab } = parseHash();
+  const initialTab = (hashTab && ALL_TABS.includes(hashTab)) ? hashTab : store.activeTab;
   switchTab(initialTab);
 
   // Browser back/forward updates the active tab
   window.addEventListener("hashchange", () => {
-    const tab = getTabFromHash();
-    if (tab && tab !== store.activeTab) switchTab(tab);
+    const { tab } = parseHash();
+    if (tab && ALL_TABS.includes(tab) && tab !== store.activeTab) switchTab(tab);
   });
-}
-
-/** Read the active tab from the URL hash (e.g. "#hazard" → "hazard"). */
-function getTabFromHash() {
-  const hash = location.hash.replace("#", "").split("?")[0];
-  return ALL_TABS.includes(hash) ? hash : null;
 }
 
 function switchTab(tabId) {
   store.setActiveTab(tabId);
-
-  // Update URL hash without triggering hashchange (replaceState is silent)
-  const newHash = `#${tabId}`;
-  if (location.hash !== newHash) {
-    history.pushState(null, "", newHash);
-  }
+  syncHashFromState();
 
   const appMap = document.getElementById("app-map");
   const infoPage = document.getElementById("info-page");
@@ -140,6 +131,63 @@ function switchTab(tabId) {
     // Show the right layer panel in the sidebar, hide the others
     for (const panel of document.querySelectorAll(".tab-panel")) {
       panel.style.display = panel.id === `tab-${tabId}` ? "block" : "none";
+    }
+  }
+}
+
+/**
+ * Write current state (active tab + open layers) to the URL hash.
+ * Called after every tab switch, layer toggle, and source switch.
+ */
+function syncHashFromState() {
+  const layers = [];
+  for (const tab of TABS) {
+    for (const layer of tab.layers) {
+      if (!layer.key || layer.disabled) continue;
+      const compound = isCompound(layer);
+      if (compound) {
+        const activeSource = layer.sources.find((s) => store.openViews.has(s.id));
+        if (activeSource) {
+          const idx = layer.sources.indexOf(activeSource);
+          layers.push({ key: layer.key, sourceIdx: idx });
+        }
+      } else if (store.openViews.has(layer.id)) {
+        layers.push({ key: layer.key, sourceIdx: 0 });
+      }
+    }
+  }
+  writeHash(store.activeTab, layers);
+}
+
+/**
+ * Restore layer state from the URL hash. Call after SDK is ready.
+ * Programmatically clicks the eye button for each layer in the hash.
+ */
+export async function restoreLayersFromHash() {
+  const { layers } = parseHash();
+  if (layers.length === 0) return;
+
+  for (const { key, sourceIdx } of layers) {
+    // Find the layer config and its DOM wrapper
+    for (const tab of TABS) {
+      for (let i = 0; i < tab.layers.length; i++) {
+        const layer = tab.layers[i];
+        if (layer.key !== key || layer.disabled) continue;
+
+        // Set compound source index before toggling
+        if (isCompound(layer) && sourceIdx > 0) {
+          store.setActiveSource(compoundKey(layer), sourceIdx);
+        }
+
+        // Find the corresponding DOM eye button and click it
+        const tabPanel = document.getElementById(`tab-${tab.id}`);
+        if (!tabPanel) continue;
+        const items = tabPanel.querySelectorAll(".layer-item");
+        const eyeBtn = items[i]?.querySelector(".layer-eye");
+        if (eyeBtn && !eyeBtn.classList.contains("is-active")) {
+          eyeBtn.click();
+        }
+      }
     }
   }
 }
@@ -273,6 +321,7 @@ async function toggleLayer(layer, eyeBtn, wrapper) {
     widgetSlot.innerHTML = "";
     sliderSlot.innerHTML = "";
     legendSlot.innerHTML = "";
+    syncHashFromState();
   } else {
     // Turn on
     try { await viewAdd(activeViewId); } catch (err) {
@@ -314,6 +363,7 @@ async function toggleLayer(layer, eyeBtn, wrapper) {
       ? { ...layer, ...layer.sources[activeIdx], label: layer.label }
       : layer;
     addLegend(legendLayer, legendSlot);
+    syncHashFromState();
   }
 }
 
@@ -339,6 +389,7 @@ async function switchSource(layer, key, newIdx, descEl, sliderSlot, legendSlot) 
   }
   store.openViews.add(newId);
   store.setActiveSource(key, newIdx);
+  syncHashFromState();
 
   // Update description to the new source's text
   if (descEl && layer.sources[newIdx].desc) {

@@ -9,7 +9,7 @@
 import { initSDK } from "./sdk/client.js";
 import { TABS, PRIMARY_PROJECT } from "./config/layers.js";
 import { validateLayers } from "./config/validate.js";
-import { buildSidebar } from "./ui/sidebar.js";
+import { buildSidebar, restoreLayersFromHash } from "./ui/sidebar.js";
 import { showInfobox } from "./ui/infobox.js";
 import "./styles/shared.css";
 
@@ -23,6 +23,9 @@ mapx.on("ready", async () => {
 
   // Enable click-to-inspect on vector features in the map
   await mapx.ask("set_vector_highlight", { enable: true });
+
+  // Restore any layers encoded in the URL hash (e.g. shared link)
+  await restoreLayersFromHash();
 });
 
 // The SDK fires click_attributes with varying arg shapes depending on

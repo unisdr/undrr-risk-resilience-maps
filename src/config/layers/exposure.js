@@ -3,6 +3,7 @@ import { ECO_DRR, HOME } from "./projects.js";
 export const EXPOSURE_LAYERS = [
   {
     id: "MX-6YLMU-U4WXC-2JJD7",
+    key: "population",
     label: "Population",
     type: "rt",
     desc: "Population distribution (HRSL/GHSL 2022).",
@@ -10,6 +11,7 @@ export const EXPOSURE_LAYERS = [
   },
   {
     id: "MX-KG1JB-OI13A-6RHKN",
+    key: "land-cover",
     label: "Land Cover",
     type: "cc",
     desc: "ESA WorldCover 10m (2021). Sentinel-1/2 based.",
@@ -17,6 +19,7 @@ export const EXPOSURE_LAYERS = [
   },
   {
     id: "MX-8F9EB-10D0B-93564",
+    key: "forests",
     label: "Forests",
     type: "rt",
     desc: "Global forest coverage (MODIS, 2020).",
@@ -24,6 +27,7 @@ export const EXPOSURE_LAYERS = [
   },
   {
     id: "MX-AB65A-A5AD3-06D68",
+    key: "mangroves",
     label: "Mangroves",
     type: "rt",
     desc: "Global Mangrove Watch (1996-2016).",
@@ -31,6 +35,7 @@ export const EXPOSURE_LAYERS = [
   },
   {
     id: "MX-726D3-C0F95-0D97A",
+    key: "coral-reefs",
     label: "Coral Reefs",
     type: "rt",
     desc: "Global coral reef distribution.",
@@ -38,6 +43,7 @@ export const EXPOSURE_LAYERS = [
   },
   {
     id: null,
+    key: "roads-rail",
     label: "Roads & Rail",
     type: "vt",
     desc: "Global road and rail network.",
@@ -45,6 +51,7 @@ export const EXPOSURE_LAYERS = [
   },
   {
     id: null,
+    key: "power-plants",
     label: "Power Plants",
     type: "vt",
     desc: "WRI Global Power Plants Database.",
