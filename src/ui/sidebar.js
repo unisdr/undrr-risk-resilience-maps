@@ -22,6 +22,9 @@ const TYPE_LABELS = { cc: "live", rt: "raster", vt: "vector" };
 
 const INFO_TABS = ["home", "guide", "sources", "downloads"];
 
+// All valid tab IDs for hash routing
+const ALL_TABS = [...INFO_TABS, ...["hazard", "exposure", "vulnerability", "risk"]];
+
 /**
  * Build the UI and wire up all nav links.
  */
@@ -83,12 +86,31 @@ export function buildSidebar() {
     });
   }
 
-  // Set initial state
-  switchTab(store.activeTab);
+  // Read initial tab from URL hash, fall back to default
+  const initialTab = getTabFromHash() || store.activeTab;
+  switchTab(initialTab);
+
+  // Browser back/forward updates the active tab
+  window.addEventListener("hashchange", () => {
+    const tab = getTabFromHash();
+    if (tab && tab !== store.activeTab) switchTab(tab);
+  });
+}
+
+/** Read the active tab from the URL hash (e.g. "#hazard" → "hazard"). */
+function getTabFromHash() {
+  const hash = location.hash.replace("#", "").split("?")[0];
+  return ALL_TABS.includes(hash) ? hash : null;
 }
 
 function switchTab(tabId) {
   store.setActiveTab(tabId);
+
+  // Update URL hash without triggering hashchange (replaceState is silent)
+  const newHash = `#${tabId}`;
+  if (location.hash !== newHash) {
+    history.pushState(null, "", newHash);
+  }
 
   const appMap = document.getElementById("app-map");
   const infoPage = document.getElementById("info-page");
@@ -272,11 +294,17 @@ async function toggleLayer(layer, eyeBtn, wrapper) {
 
     // Build source-switching widget for compound layers
     if (compound && layer.widget) {
+      const descEl = wrapper.querySelector(".layer-desc");
       const widgetEl = buildWidget(
         layer.widget, layer.sources, activeIdx,
-        (newIdx) => switchSource(layer, key, newIdx, sliderSlot, legendSlot),
+        (newIdx) => switchSource(layer, key, newIdx, descEl, sliderSlot, legendSlot),
       );
       if (widgetEl) widgetSlot.appendChild(widgetEl);
+
+      // Show the active source's description instead of the parent's
+      if (descEl && layer.sources[activeIdx].desc) {
+        descEl.textContent = layer.sources[activeIdx].desc;
+      }
     }
 
     addOpacitySlider(activeViewId, sliderSlot);
@@ -293,7 +321,7 @@ async function toggleLayer(layer, eyeBtn, wrapper) {
  * Switch between sources within a compound layer.
  * Removes the old view, adds the new one, and rebuilds controls.
  */
-async function switchSource(layer, key, newIdx, sliderSlot, legendSlot) {
+async function switchSource(layer, key, newIdx, descEl, sliderSlot, legendSlot) {
   const oldIdx = store.getActiveSource(key);
   const oldId = layer.sources[oldIdx].id;
   const newId = layer.sources[newIdx].id;
@@ -311,6 +339,11 @@ async function switchSource(layer, key, newIdx, sliderSlot, legendSlot) {
   }
   store.openViews.add(newId);
   store.setActiveSource(key, newIdx);
+
+  // Update description to the new source's text
+  if (descEl && layer.sources[newIdx].desc) {
+    descEl.textContent = layer.sources[newIdx].desc;
+  }
 
   // Rebuild opacity slider and legend for the new source
   sliderSlot.innerHTML = "";

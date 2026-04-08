@@ -35,6 +35,12 @@ Keep these files updated as the project evolves:
 - [CHANGELOG.md](CHANGELOG.md) -- notable changes ([Common Changelog](https://common-changelog.org/) format)
 - [research/](research/) -- GRI UX analysis, layer inventory, MapX crosswalk, implementation patterns
 
+## URL routing
+
+The app uses hash-based routing (`#hazard`, `#exposure`, `#guide`, etc.) so that links are shareable and browser back/forward works. All tabs share a single page and MapX iframe -- this keeps navigation instant since the SDK stays connected.
+
+Info pages (home, guide, sources, downloads) currently use the same hash routing. If SEO becomes a priority post-launch, those could be broken out into separate HTML pages via Vite MPA mode without affecting the map tabs.
+
 ## Status
 
 **MVP scaffold** -- working app with MapX SDK integration, Mangrove nav bar with category tabs, floating layer panel with accordion controls, per-layer opacity sliders, legend rendering, and feature click popups. See [CHANGELOG.md](CHANGELOG.md) for details.
