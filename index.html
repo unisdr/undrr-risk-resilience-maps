@@ -13,34 +13,31 @@
     <!-- Preview PIN gate overlay -->
     <div id="pin-gate" class="pin-gate" role="dialog" aria-modal="true" aria-labelledby="pin-gate-title">
       <div class="pin-gate__card">
-        <span class="pin-gate__badge">Preview</span>
         <img
           src="https://assets.undrr.org/static/logos/undrr/undrr-logo-horizontal.svg"
           alt="UNDRR"
           class="pin-gate__logo"
-          width="200"
-          height="29"
+          width="180"
+          height="26"
           onerror="this.style.display='none'"
         />
         <h1 class="pin-gate__title" id="pin-gate-title">Risk to Resilience Map</h1>
-        <p class="pin-gate__subtitle">This is a prototype for interaction and review only.</p>
-        <div class="pin-gate__notice" role="note">
-          <strong>Please note:</strong> This prototype does not yet reflect actual data or final look and feel. It is shared for early feedback purposes only.
-        </div>
-        <p class="pin-gate__prompt">To access the preview, please enter the PIN.</p>
+        <p class="pin-gate__desc">This is a prototype for interaction and review only. It does not reflect actual data or final look and feel. It is shared for early feedback purposes only.</p>
         <div class="pin-gate__input-row">
-          <input
-            id="pin-input"
-            class="pin-gate__input"
-            type="password"
-            inputmode="numeric"
-            maxlength="4"
-            placeholder="••••"
-            autocomplete="one-time-code"
-            aria-label="Preview PIN"
-            aria-describedby="pin-error"
-          />
-          <button id="pin-submit" class="pin-gate__btn" type="button">Enter</button>
+          <label class="pin-gate__label" for="pin-input">Enter the PIN for access.</label>
+          <div class="pin-gate__controls">
+            <input
+              id="pin-input"
+              class="pin-gate__input"
+              type="password"
+              inputmode="numeric"
+              maxlength="4"
+              placeholder="••••"
+              autocomplete="one-time-code"
+              aria-describedby="pin-error"
+            />
+            <button id="pin-submit" class="pin-gate__btn" type="button">Enter</button>
+          </div>
         </div>
         <p id="pin-error" class="pin-gate__error" aria-live="polite" hidden>Incorrect PIN. Please try again.</p>
       </div>
