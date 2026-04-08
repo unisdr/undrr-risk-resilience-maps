@@ -14,6 +14,7 @@ import {
   getViewLayerTransparency,
 } from "../sdk/filters.js";
 import { buildHomePanel } from "./home.js";
+import { buildGuidePanel, buildSourcesPanel, buildDownloadsPanel } from "./info-panels.js";
 
 // MapX view types: cc = custom coded (live), rt = raster tile, vt = vector tile
 const TYPE_LABELS = { cc: "live", rt: "raster", vt: "vector" };
@@ -34,6 +35,11 @@ export function buildSidebar() {
 
   // Home panel (default view)
   body.appendChild(buildHomePanel());
+
+  // Info panels (Guide, Sources, Downloads)
+  body.appendChild(buildGuidePanel());
+  body.appendChild(buildSourcesPanel());
+  body.appendChild(buildDownloadsPanel());
 
   // Layer panels (one per tab category)
   for (const tab of TABS) {
@@ -59,6 +65,15 @@ export function buildSidebar() {
     });
   }
 
+  // Wire up nav-bar info links (Guide, Sources, Downloads)
+  for (const link of document.querySelectorAll(".nav-info-link")) {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      switchTab(link.dataset.panel);
+      panel.classList.remove("is-collapsed");
+    });
+  }
+
   // Wire up nav-bar category links
   for (const link of document.querySelectorAll(".nav-tab-link")) {
     link.addEventListener("click", (e) => {
@@ -77,21 +92,28 @@ function switchTab(tabId) {
   store.setActiveTab(tabId);
 
   const panelTitle = document.getElementById("panel-title");
+  const INFO_PANELS = ["guide", "sources", "downloads"];
+  const isInfo = INFO_PANELS.includes(tabId);
+  const titleMap = { home: "About", guide: "Guide", sources: "Sources", downloads: "Downloads" };
   if (panelTitle) {
-    panelTitle.textContent = tabId === "home" ? "About" : "Layers";
+    panelTitle.textContent = titleMap[tabId] ?? "Layers";
   }
 
-  // Update nav-bar active state (home link has no data-tab)
+  // Update active states
   for (const link of document.querySelectorAll(".nav-tab-link")) {
     link.classList.toggle("is-active", link.dataset.tab === tabId);
   }
   const homeLink = document.querySelector(".nav-home-link");
-  if (homeLink) {
-    homeLink.classList.toggle("is-active", tabId === "home");
+  if (homeLink) homeLink.classList.toggle("is-active", tabId === "home");
+  for (const link of document.querySelectorAll(".nav-info-link")) {
+    link.classList.toggle("is-active", link.dataset.panel === tabId);
   }
 
   // Show/hide panels
   document.getElementById("tab-home").style.display = tabId === "home" ? "block" : "none";
+  for (const id of INFO_PANELS) {
+    document.getElementById(`tab-${id}`).style.display = tabId === id ? "block" : "none";
+  }
   for (const panel of document.querySelectorAll(".tab-panel")) {
     panel.style.display = panel.id === `tab-${tabId}` ? "block" : "none";
   }

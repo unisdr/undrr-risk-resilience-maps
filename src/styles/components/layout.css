@@ -1,0 +1,69 @@
+/**
+ * Page layout — full-width map below the header + nav bar.
+ */
+
+.app-map {
+  position: relative;
+  height: calc(100vh - var(--header-height) - var(--nav-height));
+}
+
+/* ── Navigation bar overrides ─────────────────────── */
+
+.nav-home-link {
+  font-weight: 700 !important;
+}
+
+.nav-tab-link.is-active,
+.nav-home-link.is-active,
+.nav-info-link.is-active {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+.nav-info-link {
+  opacity: 0.8;
+}
+
+.nav-info-link:hover,
+.nav-info-link.is-active {
+  opacity: 1;
+}
+
+.nav-info-sep {
+  display: flex;
+  margin-left: auto;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  align-self: stretch;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  flex-shrink: 0;
+}
+
+.nav-status-item {
+  margin-left: 0.5rem;
+}
+
+/* ── Status badge (inside nav bar) ────────────────── */
+
+.status-badge {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.status-badge.status-ok {
+  color: #8fdf93;
+}
+
+/* ── Mobile ───────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .layer-panel {
+    width: calc(100vw - 1.5rem);
+    max-width: 20rem;
+  }
+  .infobox {
+    max-width: calc(100vw - 1.5rem);
+  }
+}
