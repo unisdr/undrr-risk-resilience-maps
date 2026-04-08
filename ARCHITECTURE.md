@@ -12,8 +12,10 @@ Static site, no backend. The app embeds MapX in an iframe via the SDK's postMess
 
 ```
 undrr-risk-resilience-maps/
-├── index.html                  # Main entry
+├── index.html                  # Main entry point
 ├── src/
+│   ├── pin-gate.js             # Preview PIN gate (sessionStorage auth)
+│   ├── main.js                 # App bootstrap, SDK init
 │   ├── config/
 │   │   ├── layers/             # Per-category layer definitions
 │   │   │   ├── index.js        # Assembles TABS array
@@ -24,20 +26,35 @@ undrr-risk-resilience-maps/
 │   │   │   └── risk.js
 │   │   └── validate.js         # Startup config validation
 │   ├── sdk/                    # MapX SDK wrapper modules
-│   ├── state/                  # Global state (open views, active sources)
+│   │   ├── client.js           # mxsdk.Manager lifecycle
+│   │   ├── views.js            # view add/remove/query
+│   │   ├── filters.js          # layer transparency, filters
+│   │   └── map-control.js      # flyTo, zoom, projection
+│   ├── state/
+│   │   ├── store.js            # openViews Set, activeTab, activeSourceIndex
+│   │   └── hash.js             # URL hash encoding (stub)
 │   ├── ui/
-│   │   ├── sidebar.js          # Floating panel, accordion, toggle logic
-│   │   ├── widgets/            # Source-switching widgets (registry pattern)
-│   │   │   ├── index.js        # Widget registry + isCompound helper
-│   │   │   ├── sub-tabs.js     # Button bar for metric switching
-│   │   │   └── stepped-slider.js # Range slider for return periods
-│   │   ├── home.js             # About/overview panel
-│   │   ├── info-panels.js      # Guide, Sources, Downloads panels
-│   │   └── infobox.js          # Feature click popup
+│   │   ├── sidebar.js          # Floating panel, accordion, nav routing
+│   │   ├── home.js             # Home / About full-page view
+│   │   ├── info-panels.js      # Guide, Sources, Downloads full-page views
+│   │   ├── infobox.js          # Feature click popup
+│   │   └── widgets/            # Source-switching widgets (registry pattern)
+│   │       ├── index.js        # Widget registry + isCompound helper
+│   │       ├── sub-tabs.js     # Button bar for metric switching
+│   │       └── stepped-slider.js # Range slider for return periods
 │   └── styles/
 │       ├── shared.css          # CSS entry point (@imports)
 │       ├── tokens.css          # Design tokens (custom properties)
 │       └── components/         # Per-component CSS files
+│           ├── layout.css      # App shell, nav, info-page containers
+│           ├── pin-gate.css    # PIN gate overlay
+│           ├── layer-panel.css # Floating sidebar panel
+│           ├── layer-accordion.css
+│           ├── opacity-slider.css
+│           ├── legend.css
+│           ├── home-panel.css  # Info page hero, sections, cards
+│           ├── widgets.css     # Sub-tabs and stepped-slider
+│           └── infobox.css
 ├── .github/workflows/deploy.yml # GitHub Pages CI
 ├── vite.config.js
 ├── server.js                   # Static production server
@@ -109,10 +126,13 @@ Plain ES module exports with setter functions, no framework. Lightweight enough 
 
 ### UI layer (Mangrove)
 
-All styling builds on the [UNDRR Mangrove component library](https://assets.undrr.org/static/mangrove/1.4.0/css/style.css) (CSS only, no JS framework). Components used:
+All styling builds on the [UNDRR Mangrove component library](https://assets.undrr.org/static/mangrove/latest/css/style.css) (CSS only, no JS framework). Components used:
 
 - `mg-page-header` — UNDRR branding bar with Sendai stripe
 - `mg-mega-topbar` — category navigation bar (Simple Nav variant)
+- `mg-hero` — full-width hero header band on info pages
+- `mg-card`, `mg-card__icon--bordered` — category cards on the home page
+- `mg-highlight-box` — callout boxes on info pages
 - `mg-button` / `mg-tag` — interactive controls and layer type badges
 - `mg-container` — centred layout
 - Utility classes (`mg-u-*`) for spacing, colour, typography
