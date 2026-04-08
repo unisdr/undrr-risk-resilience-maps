@@ -2,7 +2,7 @@
 
 > Keep this document updated as the project evolves.
 >
-> Based on patterns proven in [mapx-demo-embed](../mapx-demo-embed/) (documented in [research/implementation-patterns.md](research/implementation-patterns.md)). Adapted for the requirements in [PRD.md](PRD.md). See [research/gri-ux-analysis.md](research/gri-ux-analysis.md) for the GRI interaction model this architecture targets. See [METHODOLOGY.md](METHODOLOGY.md) for MapX API/SDK discovery approach.
+> Adapted for the requirements in [PRD.md](PRD.md). See [research/gri-ux-analysis.md](research/gri-ux-analysis.md) for the GRI interaction model this architecture targets. See [METHODOLOGY.md](METHODOLOGY.md) for MapX API/SDK discovery approach.
 
 ## Overview
 
@@ -54,7 +54,7 @@ Layers for the active category appear in a floating panel positioned over the to
 
 ### State management
 
-Plain ES module exports with setter functions, no framework. Lightweight enough for this class of app, proven in mapx-demo-embed.
+Plain ES module exports with setter functions, no framework. Lightweight enough for this class of app.
 
 **Terminology note:** in the MapX SDK, a dataset on the map is called a "view." In our UI and docs, we call them "layers" (what the user sees). The code uses both: `openViews` is the SDK-facing set, but UI labels say "layer."
 
@@ -81,7 +81,7 @@ Clicking a country opens the external Risk & Resilience country page. Just a URL
 
 ### Dual map views
 
-The GRI model allows up to two simultaneous map panels. Each panel needs its own `mxsdk.Manager` instance (its own iframe). We did this in mapx-demo-embed's metrics demo (scrollytelling map + country deep-dive map).
+The GRI model allows up to two simultaneous map panels. Each panel needs its own `mxsdk.Manager` instance (its own iframe).
 
 ## Build pipeline
 

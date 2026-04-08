@@ -26,7 +26,7 @@
 
 ## Objective
 
-Build a [MapX](#glossary)-based geospatial explorer that replicates the [GRI Risk Viewer](#glossary) interaction model, reskinned with UNDRR branding and tied to the Risk & Resilience Metrics framework. Soft launch target: end of May 2026 (London Climate Week fundraising/investor forums).
+Build a [MapX](#glossary)-based geospatial explorer that replicates the [GRI Risk Viewer](#glossary) interaction model, reskinned with UNDRR branding and tied to the Risk & Resilience Metrics framework. Soft launch target: end of May 2026 (London Climate Week).
 
 ## Research
 
@@ -87,7 +87,7 @@ Layers are organised by tab (hazard / exposure / vulnerability / risk). The defi
 
 ## Open questions
 
-1. **MapX commercial terms** -- Clarify what the ~$10k/year "option one" cost covers and whether it's post-partnership or additional. Owner: UNDRR digital lead + MapX platform contact.
+1. **MapX commercial terms** -- Clarify platform licensing and partnership terms. Owner: UNDRR digital lead + MapX platform contact.
 2. **Data upload to MapX** -- Uploading new datasets is possible in principle but needs further testing. Most GRI layers (vulnerability, detailed exposure, derived risk) are not in MapX and will need to be ingested.
 3. **Data inventory** -- Programme lead to provide a structured list: (a) GRI layers to clone, (b) metrics layers available now, (c) layers expected within 6-8 weeks. Organised by tab.
 4. **GRI delta-analysis** -- Programme team to document what GRI does that they don't want replicated and what they want differently or additionally.
@@ -108,4 +108,4 @@ Layers are organised by tab (hazard / exposure / vulnerability / risk). The defi
 |---|---|---|
 | Discovery | March - early April 2026 | Formalise MapX terms, compile data inventory, agree tab structure, initial demo. **Done.** |
 | Build | April - mid-May 2026 | MVP scaffold built: nav bar, floating layer panel, SDK integration, legends. Remaining: country page links, metadata panels, additional layer controls, URL state encoding. |
-| Soft launch | End of May 2026 | London Climate Week fundraising/investor forums |
+| Soft launch | End of May 2026 | London Climate Week |

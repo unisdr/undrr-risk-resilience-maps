@@ -1,6 +1,6 @@
 # UNDRR Risk to Resilience Maps
 
-A MapX-based geospatial explorer for UNDRR. Replicates the [GRI Risk Viewer](https://global.infrastructureresilience.org) interaction model with UNDRR branding, tied to the Risk & Resilience Metrics framework. Builds on the [mapx-demo-embed](../mapx-demo-embed/) proof of concept (a sibling repo; MapX SDK iframe bridge, Mangrove UI, Vite toolchain). See [PRD.md](PRD.md) for requirements, scope, and timeline.
+A MapX-based geospatial explorer for UNDRR. Replicates the [GRI Risk Viewer](https://global.infrastructureresilience.org) interaction model with UNDRR branding, tied to the Risk & Resilience Metrics framework. See [PRD.md](PRD.md) for requirements, scope, and timeline.
 
 ## Developing
 

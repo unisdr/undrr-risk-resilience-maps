@@ -1,6 +1,6 @@
-# Implementation patterns from mapx-demo-embed
+# Implementation patterns
 
-> Reference for scaffolding the new project. All code examples and file paths refer to the [mapx-demo-embed](../../mapx-demo-embed/) sibling repo. See [ARCHITECTURE.md](../ARCHITECTURE.md) for how we plan to adapt these patterns and [PRD.md](../PRD.md) for what we're building.
+> Reference patterns for building MapX SDK embed apps. See [ARCHITECTURE.md](../ARCHITECTURE.md) for how these patterns are applied and [PRD.md](../PRD.md) for what we're building.
 
 ## 1. Project scaffolding
 
@@ -12,7 +12,7 @@ Vite handles multi-page apps by listing HTML entry points in `rollupOptions.inpu
 // vite.config.js
 export default defineConfig({
   root: ".",
-  base: "/mapx-demo-embed/",   // deploy path -- change for our project
+  base: "/your-project/",       // deploy path
   server: { port: 3001 },
   build: {
     outDir: "dist",
