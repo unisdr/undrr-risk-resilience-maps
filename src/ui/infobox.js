@@ -1,3 +1,12 @@
+/**
+ * Feature click popup.
+ *
+ * Displays attribute data when a user clicks a vector feature on the map.
+ * The MapX SDK fires "click_attributes" events with the feature properties;
+ * this module renders them as a key-value table in a floating infobox.
+ */
+
+// MapX internal fields that shouldn't be shown to users
 const SKIP_KEYS = ["gid", "mx_t0", "mx_t1", "geom", "geometry"];
 
 function esc(str) {
@@ -17,6 +26,8 @@ export function showInfobox(data) {
     return;
   }
 
+  // The SDK sends attributes as either an array (vector views) or a plain
+  // object (custom coded views). Normalise to a single object.
   let props = null;
   if (
     data.attributes &&

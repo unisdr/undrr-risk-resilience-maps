@@ -1,3 +1,10 @@
+/**
+ * Preview PIN gate.
+ *
+ * Soft barrier for the prototype -- not a security mechanism. Stores auth
+ * in sessionStorage so it only asks once per browser tab. The PIN is
+ * hardcoded because this is a preview gate, not access control.
+ */
 const STORAGE_KEY = "undrr_preview_auth";
 const CORRECT_PIN = "5498";
 
@@ -19,6 +26,7 @@ function attempt() {
     input.value = "";
     input.setAttribute("aria-invalid", "true");
     input.focus();
+    // Clear the shake animation after it plays (matches CSS animation duration)
     setTimeout(() => input.removeAttribute("aria-invalid"), 1200);
   }
 }

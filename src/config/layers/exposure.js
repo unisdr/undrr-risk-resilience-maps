@@ -1,0 +1,53 @@
+import { ECO_DRR, HOME } from "./projects.js";
+
+export const EXPOSURE_LAYERS = [
+  {
+    id: "MX-6YLMU-U4WXC-2JJD7",
+    label: "Population",
+    type: "rt",
+    desc: "Population distribution (HRSL/GHSL 2022).",
+    project: ECO_DRR,
+  },
+  {
+    id: "MX-KG1JB-OI13A-6RHKN",
+    label: "Land Cover",
+    type: "cc",
+    desc: "ESA WorldCover 10m (2021). Sentinel-1/2 based.",
+    project: HOME,
+  },
+  {
+    id: "MX-8F9EB-10D0B-93564",
+    label: "Forests",
+    type: "rt",
+    desc: "Global forest coverage (MODIS, 2020).",
+    project: ECO_DRR,
+  },
+  {
+    id: "MX-AB65A-A5AD3-06D68",
+    label: "Mangroves",
+    type: "rt",
+    desc: "Global Mangrove Watch (1996-2016).",
+    project: ECO_DRR,
+  },
+  {
+    id: "MX-726D3-C0F95-0D97A",
+    label: "Coral Reefs",
+    type: "rt",
+    desc: "Global coral reef distribution.",
+    project: ECO_DRR,
+  },
+  {
+    id: null,
+    label: "Roads & Rail",
+    type: "vt",
+    desc: "Global road and rail network.",
+    disabled: true,
+  },
+  {
+    id: null,
+    label: "Power Plants",
+    type: "vt",
+    desc: "WRI Global Power Plants Database.",
+    disabled: true,
+  },
+];

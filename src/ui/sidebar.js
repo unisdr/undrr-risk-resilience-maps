@@ -1,3 +1,11 @@
+/**
+ * Floating layer panel.
+ *
+ * Builds the accordion UI for toggling map layers on/off, renders
+ * per-layer controls (opacity slider, legend), and wires up the
+ * nav-bar category tabs. Layer definitions come from config/layers.js;
+ * this module is purely UI -- it doesn't know about specific datasets.
+ */
 import { TABS } from "../config/layers.js";
 import * as store from "../state/store.js";
 import { viewAdd, viewRemove, getViewLegendImage } from "../sdk/views.js";
@@ -6,6 +14,7 @@ import {
   getViewLayerTransparency,
 } from "../sdk/filters.js";
 
+// MapX view types: cc = custom coded (live), rt = raster tile, vt = vector tile
 const TYPE_LABELS = { cc: "live", rt: "raster", vt: "vector" };
 
 /**
@@ -210,7 +219,8 @@ async function addOpacitySlider(idView, container) {
   valueDisplay.className = "opacity-value";
   valueDisplay.textContent = "100%";
 
-  // Read current transparency from SDK
+  // SDK uses "transparency" (0=opaque, 100=invisible); UI shows "opacity"
+  // (0=invisible, 100=opaque). Convert: opacity = 100 - transparency.
   try {
     const current = await getViewLayerTransparency(idView);
     if (typeof current === "number") {
@@ -218,7 +228,7 @@ async function addOpacitySlider(idView, container) {
       valueDisplay.textContent = `${100 - current}%`;
     }
   } catch {
-    // Default to 100%
+    // Default to 100% opacity
   }
 
   slider.addEventListener("input", async () => {
@@ -227,7 +237,7 @@ async function addOpacitySlider(idView, container) {
     try {
       await setViewLayerTransparency(idView, 100 - opacity);
     } catch {
-      // Silently ignore transparency errors
+      // Transparency errors are non-fatal
     }
   });
 
@@ -236,10 +246,15 @@ async function addOpacitySlider(idView, container) {
   container.appendChild(row);
 }
 
+/**
+ * Render the legend for a layer. If the layer config has a local `legend`
+ * array, render HTML swatches from that. The SDK legend image (server-
+ * rendered PNG) is still fetched -- shown as the primary legend when no
+ * local override exists, or tucked into a collapsed diagnostic toggle
+ * when one does.
+ */
 async function addLegend(layer, container) {
   const hasLocalLegend = Array.isArray(layer.legend) && layer.legend.length > 0;
-
-  // Render local legend override if defined
   if (hasLocalLegend) {
     const el = document.createElement("div");
     el.className = "html-legend";
