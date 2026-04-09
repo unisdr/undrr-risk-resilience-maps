@@ -8,6 +8,7 @@ export const EXPOSURE_LAYERS = [
     type: "rt",
     desc: "Population distribution (HRSL/GHSL 2022).",
     source: "High Resolution Settlement Layer / GHSL 2022 (Meta / EU Joint Research Centre).",
+    sourceUrl: "https://human-settlement.emergency.copernicus.eu/",
     project: ECO_DRR,
   },
   {
@@ -20,6 +21,7 @@ export const EXPOSURE_LAYERS = [
     type: "cc",
     desc: "ESA WorldCover 10m (2021). Sentinel-1/2 based.",
     source: "ESA WorldCover 10m (2021), CC BY 4.0.",
+    sourceUrl: "https://esa-worldcover.org/",
     note: "Disabled — view is in the MapX HOME project; cannot load until data is moved to the ECO-DRR project.",
     project: HOME,
     disabled: true,
@@ -31,6 +33,7 @@ export const EXPOSURE_LAYERS = [
     type: "rt",
     desc: "Global forest coverage (MODIS, 2020).",
     source: "MODIS Global Forest Cover 2020 via MapX.",
+    sourceUrl: "https://lpdaac.usgs.gov/products/mod44bv006/",
     project: ECO_DRR,
   },
   {
@@ -40,6 +43,7 @@ export const EXPOSURE_LAYERS = [
     type: "rt",
     desc: "Global Mangrove Watch (1996-2016).",
     source: "Global Mangrove Watch, JAXA (1996-2016).",
+    sourceUrl: "https://www.globalmangrovewatch.org/",
     project: ECO_DRR,
   },
   {
@@ -49,6 +53,7 @@ export const EXPOSURE_LAYERS = [
     type: "rt",
     desc: "Global coral reef distribution.",
     source: "UNEP-WCMC / IMaRS-USF Global Coral Reef dataset.",
+    sourceUrl: "https://data.unep-wcmc.org/datasets/1",
     project: ECO_DRR,
   },
   {
@@ -58,6 +63,7 @@ export const EXPOSURE_LAYERS = [
     type: "vt",
     desc: "Global road and rail network.",
     source: "OpenStreetMap contributors (ODbL).",
+    sourceUrl: "https://www.openstreetmap.org/",
     note: "Disabled — MapX view ID not yet assigned.",
     disabled: true,
   },
@@ -68,6 +74,7 @@ export const EXPOSURE_LAYERS = [
     type: "vt",
     desc: "WRI Global Power Plants Database.",
     source: "WRI Global Power Plants Database (CC BY 4.0).",
+    sourceUrl: "https://datasets.wri.org/dataset/globalpowerplantdatabase",
     note: "Disabled — MapX view ID not yet assigned.",
     disabled: true,
   },

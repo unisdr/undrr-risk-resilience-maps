@@ -40,7 +40,7 @@ export function generateLayerInventoryCSV() {
     row(
       "Category", "Layer key", "Layer name", "Sub-source",
       "Type", "Description", "MapX view ID", "MapX project",
-      "Status", "Source attribution", "Notes"
+      "Status", "Source attribution", "Source URL", "Notes"
     ),
   ];
 
@@ -65,6 +65,7 @@ export function generateLayerInventoryCSV() {
             project,
             status,
             src.source || layer.source || "",
+            src.sourceUrl || layer.sourceUrl || "",
             src.note || layer.note || "",
           ));
         }
@@ -82,6 +83,7 @@ export function generateLayerInventoryCSV() {
           project,
           status,
           layer.source || "",
+          layer.sourceUrl || "",
           layer.note || "",
         ));
       }

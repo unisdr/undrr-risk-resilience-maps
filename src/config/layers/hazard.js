@@ -8,6 +8,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Flood hazard from the GAR model.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX. Reference: WRI Aqueduct Floods (CC BY 4.0), JRC Global River Flood Hazard Maps (CC BY 4.0).",
+    sourceUrl: "https://preview.grid.unep.ch/",
     project: ECO_DRR,
     sources: [
       {
@@ -46,6 +47,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Peak Ground Acceleration from the GEM Global Seismic Hazard Map.",
     source: "GEM Global Seismic Hazard Map (CC BY-NC-SA 4.0).",
+    sourceUrl: "https://www.globalquakemodel.org/product/global-seismic-hazard-assessment-program",
     project: ECO_DRR,
     sources: [
       { id: "MX-J3YTW-RUQN3-40P87", label: "250 yr" },
@@ -63,6 +65,7 @@ export const HAZARD_LAYERS = [
     type: "cc",
     desc: "USGS Mag >= 5.5, past 30 days. Updated every 15 min.",
     source: "USGS Earthquake Hazards Program.",
+    sourceUrl: "https://earthquake.usgs.gov/earthquakes/feed/",
     project: ECO_DRR,
   },
   {
@@ -72,6 +75,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Annual physical exposure to surges from cyclones.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
+    sourceUrl: "https://preview.grid.unep.ch/",
     project: ECO_DRR,
   },
   {
@@ -81,6 +85,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Cyclone wind speed and physical exposure.",
     source: "STORM Tropical Cyclone dataset (CC0 1.0); IRIS Imperial College Storm Model (CC BY 4.0).",
+    sourceUrl: "https://www.stormtropical.eu/",
     project: ECO_DRR,
     sources: [
       {
@@ -103,6 +108,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Earthquake and precipitation triggered landslides.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
+    sourceUrl: "https://preview.grid.unep.ch/",
     project: ECO_DRR,
     sources: [
       {
@@ -125,6 +131,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Tsunami exposure and frequency.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
+    sourceUrl: "https://preview.grid.unep.ch/",
     project: ECO_DRR,
     sources: [
       {

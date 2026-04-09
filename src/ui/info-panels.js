@@ -84,18 +84,22 @@ const SOURCES = [
       {
         label: "River & coastal flooding",
         detail: "GAR/PREVIEW platform (UNEP/GRID‑Geneva) via MapX. Reference data: WRI Aqueduct Floods (CC BY 4.0), JRC Global River Flood Hazard Maps (CC BY 4.0).",
+        url: "https://preview.grid.unep.ch/",
       },
       {
         label: "Tropical cyclones",
         detail: "STORM Tropical Cyclone dataset (CC0 1.0); IRIS Imperial College Storm Model (CC BY 4.0).",
+        url: "https://www.stormtropical.eu/",
       },
       {
         label: "Extreme heat & droughts",
         detail: "Lange et al. 2020 via ISIMIP (CC0 1.0). Multi-model ensemble; RCP 2.6 / 6.0 scenarios.",
+        url: "https://www.isimip.org/",
       },
       {
         label: "Earthquakes",
         detail: "GEM Global Seismic Hazard Map (CC BY‑NC‑SA 4.0). Peak Ground Acceleration, 10% probability of exceedance in 50 years.",
+        url: "https://www.globalquakemodel.org/product/global-seismic-hazard-assessment-program",
       },
       {
         label: "Additional hazard layers",
@@ -109,10 +113,12 @@ const SOURCES = [
       {
         label: "Roads & railways",
         detail: "OpenStreetMap contributors (ODbL). Extract via the GRI baseline.",
+        url: "https://www.openstreetmap.org/",
       },
       {
         label: "Power infrastructure",
         detail: "Gridfinder transmission network (CC BY 4.0); WRI Global Powerplants Database (CC BY 4.0).",
+        url: "https://datasets.wri.org/dataset/globalpowerplantdatabase",
       },
       {
         label: "Cropland",
@@ -130,6 +136,7 @@ const SOURCES = [
       {
         label: "Placeholder",
         detail: "Sources to be confirmed with the UNDRR programme team. GRI reference sources include: Global Data Lab Subnational HDI, Relative Wealth Index (Meta Data for Good), and WDPA Protected Areas (UNEP‑WCMC / IUCN).",
+        url: "https://globaldatalab.org/shdi/",
       },
     ],
   },
@@ -147,11 +154,13 @@ const SOURCES = [
     entries: [
       {
         label: "MapX",
-        detail: "Map data hosted on MapX by UNEP/GRID‑Geneva (app.mapx.org).",
+        detail: "Map data hosted on MapX by UNEP/GRID‑Geneva.",
+        url: "https://app.mapx.org/",
       },
       {
         label: "GRI Risk Viewer",
-        detail: "This tool is the successor to the GRI Risk Viewer by Oxford OPSIS (global.infrastructureresilience.org). Layer inventory and interaction model adapted under attribution.",
+        detail: "This tool is the successor to the GRI Risk Viewer by Oxford OPSIS. Layer inventory and interaction model adapted under attribution.",
+        url: "https://global.infrastructureresilience.org",
       },
     ],
   },
@@ -166,7 +175,10 @@ export function buildSourcesPanel() {
       <div class="info-source-entries">
         ${entries.map((e) => `
           <div class="info-source-entry">
-            <p class="info-source-entry__label">${e.label}</p>
+            <p class="info-source-entry__label">${e.url
+              ? `<a href="${e.url}" target="_blank" rel="noopener">${e.label}</a>`
+              : e.label
+            }</p>
             <p class="info-source-entry__detail">${e.detail}</p>
           </div>
         `).join("")}
@@ -193,7 +205,7 @@ export function buildSourcesPanel() {
         <h2 class="info-page-section__title">Layer inventory</h2>
         <p>Download a full inventory of all data layers configured in this tool, including MapX view IDs, data types, source attribution, and status notes. Useful for technical review and handoff.</p>
         <p>
-          <button id="btn-download-inventory" class="mg-button mg-button--secondary">
+          <button id="btn-download-inventory" class="mg-button mg-button-secondary">
             Download layer inventory (CSV)
           </button>
         </p>
