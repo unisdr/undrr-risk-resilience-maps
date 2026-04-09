@@ -3,6 +3,8 @@
  * Full-page views using UNDRR Mangrove design system classes.
  */
 
+import { downloadLayerInventory } from "../utils/export-layers.js";
+
 // ── Guide ─────────────────────────────────────────────────────────────────────
 
 const GUIDE_STEPS = [
@@ -172,7 +174,7 @@ export function buildSourcesPanel() {
     </div>
   `).join("");
 
-  return buildPanel("tab-sources", `
+  const panel = buildPanel("tab-sources", `
     <div class="info-page-hero info-page-hero--secondary">
       <div class="mg-container">
         <h1 class="info-page-hero__title">Sources</h1>
@@ -185,7 +187,23 @@ export function buildSourcesPanel() {
         ${sections}
       </div>
     </div>
+
+    <div class="info-page-section info-page-section--grey">
+      <div class="mg-container">
+        <h2 class="info-page-section__title">Layer inventory</h2>
+        <p>Download a full inventory of all data layers configured in this tool, including MapX view IDs, data types, source attribution, and status notes. Useful for technical review and handoff.</p>
+        <p>
+          <button id="btn-download-inventory" class="mg-button mg-button--secondary">
+            Download layer inventory (CSV)
+          </button>
+        </p>
+      </div>
+    </div>
   `);
+
+  panel.querySelector("#btn-download-inventory").addEventListener("click", downloadLayerInventory);
+
+  return panel;
 }
 
 // ── Downloads ─────────────────────────────────────────────────────────────────

@@ -7,6 +7,7 @@ export const HAZARD_LAYERS = [
     label: "River Flooding",
     type: "rt",
     desc: "Flood hazard from the GAR model.",
+    source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX. Reference: WRI Aqueduct Floods (CC BY 4.0), JRC Global River Flood Hazard Maps (CC BY 4.0).",
     project: ECO_DRR,
     sources: [
       {
@@ -44,6 +45,7 @@ export const HAZARD_LAYERS = [
     label: "Earthquake PGA",
     type: "rt",
     desc: "Peak Ground Acceleration from the GEM Global Seismic Hazard Map.",
+    source: "GEM Global Seismic Hazard Map (CC BY-NC-SA 4.0).",
     project: ECO_DRR,
     sources: [
       { id: "MX-J3YTW-RUQN3-40P87", label: "250 yr" },
@@ -60,6 +62,7 @@ export const HAZARD_LAYERS = [
     label: "Earthquakes (live)",
     type: "cc",
     desc: "USGS Mag >= 5.5, past 30 days. Updated every 15 min.",
+    source: "USGS Earthquake Hazards Program.",
     project: ECO_DRR,
   },
   {
@@ -68,6 +71,7 @@ export const HAZARD_LAYERS = [
     label: "Cyclone Surge Exposure",
     type: "rt",
     desc: "Annual physical exposure to surges from cyclones.",
+    source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
     project: ECO_DRR,
   },
   {
@@ -76,6 +80,7 @@ export const HAZARD_LAYERS = [
     label: "Tropical Cyclones",
     type: "rt",
     desc: "Cyclone wind speed and physical exposure.",
+    source: "STORM Tropical Cyclone dataset (CC0 1.0); IRIS Imperial College Storm Model (CC BY 4.0).",
     project: ECO_DRR,
     sources: [
       {
@@ -97,6 +102,7 @@ export const HAZARD_LAYERS = [
     label: "Landslides",
     type: "rt",
     desc: "Earthquake and precipitation triggered landslides.",
+    source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
     project: ECO_DRR,
     sources: [
       {
@@ -118,6 +124,7 @@ export const HAZARD_LAYERS = [
     label: "Tsunamis",
     type: "rt",
     desc: "Tsunami exposure and frequency.",
+    source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
     project: ECO_DRR,
     sources: [
       {
