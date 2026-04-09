@@ -107,5 +107,5 @@ Layers are organised by tab (hazard / exposure / vulnerability / risk). The defi
 | Phase | Period | Activities |
 |---|---|---|
 | Discovery | March – early April 2026 | Formalise MapX terms, compile data inventory, agree tab structure, initial demo. **Done.** |
-| Build | April – mid-May 2026 | MVP scaffold complete: nav bar, PIN gate, floating layer panel, SDK integration, legends, compound layers, info pages (Home, Guide, Sources, Downloads). Remaining: country page links, URL state encoding, per-layer metadata, real data layers once confirmed by programme team. |
+| Build | April – mid-May 2026 | MVP scaffold complete: nav bar, PIN gate, floating layer panel, SDK integration, legends, compound layers, info pages (Home, Guide, Sources, Downloads), hash-based URL routing (active layers + tab). Remaining: country page links, per-layer metadata, real data layers once confirmed by programme team. |
 | Soft launch | End of May 2026 | London Climate Week |

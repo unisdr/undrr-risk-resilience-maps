@@ -8,7 +8,7 @@ The current store (`src/state/store.js`) is a Set of open view IDs plus an activ
 
 - **Per-layer filter state** -- numeric ranges, text filters, dropdown selections. Currently the only per-layer control is the opacity slider, which reads/writes directly to the SDK. Adding more filters means storing their values locally so we can restore state on tab switch or page reload.
 - **Session persistence** -- saving the user's layer selections and filter settings to `localStorage` so they survive a page refresh.
-- **URL state encoding** -- encoding active layers and filters in the URL for shareable deep links (a GRI feature we want to replicate).
+- **URL state encoding** -- active layers and the active tab are already encoded in the URL hash (shareable links, back/forward). What isn't yet encoded: per-layer filter settings (opacity writes directly to the SDK, not to URL state) and sub-tab source index within compound layers. These will need URL encoding when session persistence lands.
 
 The upgrade path: replace the flat Set with a keyed object (`{ [layerId]: { visible, opacity, filters } }`) and add `saveSession()` / `loadSession()` helpers. Do this before adding any filter widgets beyond opacity.
 
@@ -30,4 +30,4 @@ Not blocking -- the current callback pattern works fine for source switching and
 
 ## Dual-panel map view
 
-The GRI Risk Viewer supports side-by-side map panels. Each panel requires its own `mxsdk.Manager` instance (separate iframe). This is a v2 feature -- the architecture supports it (see ARCHITECTURE.md) but no code exists yet.
+The GRI Risk Viewer supports side-by-side map panels. Each panel requires its own `mxsdk.Manager` instance (separate iframe). This is a v2 feature — no code exists yet and it's not currently planned for the MVP scope.
