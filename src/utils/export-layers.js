@@ -10,12 +10,7 @@
  */
 
 import { TABS } from "../config/layers/index.js";
-
-const PROJECT_NAMES = {
-  "MX-2LD-FBB-58N-ROK-8RH": "ECO-DRR (UNEP/GRID-Geneva)",
-  "MX-YBJ-YYF-08R-UUR-QW6": "MapX HOME project",
-  "MX-CDC-CTV-4PZ-VQD-OZ3": "MapX CDC project",
-};
+import { PROJECT_LABELS } from "../config/layers/projects.js";
 
 const TYPE_LABELS = {
   rt: "Raster",
@@ -51,7 +46,7 @@ export function generateLayerInventoryCSV() {
     for (const layer of tab.layers) {
       const category = tab.label;
       const type = TYPE_LABELS[layer.type] || layer.type;
-      const project = PROJECT_NAMES[layer.project] || layer.project || "";
+      const project = PROJECT_LABELS[layer.project] || layer.project || "";
 
       // Warn in dev if an active layer is missing citation or license
       if (!layer.disabled && layer.id !== null && (!layer.citation || !layer.license)) {
