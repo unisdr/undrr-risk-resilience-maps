@@ -53,6 +53,10 @@
   background-color: #f2f5f8;
 }
 
+.info-page-section--wide .mg-container {
+  max-width: 1100px;
+}
+
 .info-page-section .mg-container {
   max-width: 900px;
 }
@@ -179,6 +183,82 @@
   font-size: 0.85rem;
   color: #4d4d4d;
   line-height: 1.5;
+}
+
+/* ── Data table (Sources page) ── */
+
+.data-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 0.5rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.data-table th {
+  background-color: #004f91;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.55rem 0.75rem;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.6rem 0.75rem;
+  vertical-align: top;
+  border-bottom: 1px solid #dde4ea;
+  color: #2d2d2d;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:nth-child(even) td {
+  background-color: #f7fafc;
+}
+
+.data-table a {
+  color: #004f91;
+  text-decoration: underline;
+}
+
+.data-table td:first-child {
+  font-weight: 600;
+  min-width: 120px;
+}
+
+.data-table .data-table__license {
+  white-space: nowrap;
+}
+
+.data-table__row--planned td {
+  color: #6b7a8d;
+  background-color: #f9fafb !important;
+}
+
+.data-table__row--planned td:first-child {
+  color: #4d5f75;
+}
+
+.data-table__badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.1em 0.45em;
+  border-radius: 3px;
+  background-color: #e8f0f9;
+  color: #004f91;
+  margin-right: 0.35rem;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 /* ── Downloads / plain lists ── */

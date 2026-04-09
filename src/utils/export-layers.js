@@ -4,6 +4,9 @@
  * Generates a CSV from the layer config TABS array so the file always
  * reflects the current state of the application. Includes one row per
  * MapX view ID (sub-sources of compound layers each get their own row).
+ *
+ * `citation` and `license` are layer-level fields only — not defined on
+ * individual sub-sources of compound layers.
  */
 
 import { TABS } from "../config/layers/index.js";
@@ -40,7 +43,7 @@ export function generateLayerInventoryCSV() {
     row(
       "Category", "Layer key", "Layer name", "Sub-source",
       "Type", "Description", "MapX view ID", "MapX project",
-      "Status", "Source attribution", "Source URL", "Notes"
+      "Status", "Source attribution", "Source URL", "Citation", "License", "Notes"
     ),
   ];
 
@@ -50,8 +53,13 @@ export function generateLayerInventoryCSV() {
       const type = TYPE_LABELS[layer.type] || layer.type;
       const project = PROJECT_NAMES[layer.project] || layer.project || "";
 
+      // Warn in dev if an active layer is missing citation or license
+      if (!layer.disabled && layer.id !== null && (!layer.citation || !layer.license)) {
+        console.warn(`[layer-inventory] Active layer "${layer.key}" is missing citation or license.`);
+      }
+
       if (layer.sources && layer.sources.length > 0) {
-        // Compound layer: one row per sub-source
+        // Compound layer: one row per sub-source; citation/license from parent
         for (const src of layer.sources) {
           const status = layer.disabled ? "Disabled" : (src.id ? "Active" : "Placeholder");
           lines.push(row(
@@ -66,6 +74,8 @@ export function generateLayerInventoryCSV() {
             status,
             src.source || layer.source || "",
             src.sourceUrl || layer.sourceUrl || "",
+            layer.citation || "",
+            layer.license || "",
             src.note || layer.note || "",
           ));
         }
@@ -84,6 +94,8 @@ export function generateLayerInventoryCSV() {
           status,
           layer.source || "",
           layer.sourceUrl || "",
+          layer.citation || "",
+          layer.license || "",
           layer.note || "",
         ));
       }
@@ -106,3 +118,4 @@ export function downloadLayerInventory() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+

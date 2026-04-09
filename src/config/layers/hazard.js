@@ -7,8 +7,10 @@ export const HAZARD_LAYERS = [
     label: "River Flooding",
     type: "rt",
     desc: "Flood hazard from the GAR model.",
-    source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX. Reference: WRI Aqueduct Floods (CC BY 4.0), JRC Global River Flood Hazard Maps (CC BY 4.0).",
+    source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX. Underlying data: WRI Aqueduct Floods; JRC Global River Flood Hazard Maps.",
     sourceUrl: "https://unepgrid.ch/en/activity/1BDE1705",
+    citation: "Ward, P.J. et al. (2020): Aqueduct Floods Methodology. WRI Technical Note, Washington D.C. / Baugh, C. et al. (2024): Global river flood hazard maps. JRC. doi:10.2905/jrc-floods-floodmapgl.",
+    license: "CC BY 4.0",
     project: ECO_DRR,
     sources: [
       {
@@ -46,8 +48,10 @@ export const HAZARD_LAYERS = [
     label: "Earthquake PGA",
     type: "rt",
     desc: "Peak Ground Acceleration from the GEM Global Seismic Hazard Map.",
-    source: "GEM Global Seismic Hazard Map (CC BY-NC-SA 4.0).",
+    source: "Global Earthquake Model (GEM) Foundation.",
     sourceUrl: "https://www.globalquakemodel.org/gem",
+    citation: "Pagani, M. et al. (2018): Global Earthquake Model (GEM) Seismic Hazard Map. Earthquake Spectra, 34(4): 1281–1296. doi:10.1193/160117EQS316M.",
+    license: "CC BY-NC-SA 4.0",
     project: ECO_DRR,
     sources: [
       { id: "MX-J3YTW-RUQN3-40P87", label: "250 yr" },
@@ -66,6 +70,8 @@ export const HAZARD_LAYERS = [
     desc: "USGS Mag >= 5.5, past 30 days. Updated every 15 min.",
     source: "USGS Earthquake Hazards Program.",
     sourceUrl: "https://earthquake.usgs.gov/earthquakes/feed/",
+    citation: "USGS Earthquake Hazards Program. Advanced National Seismic System Comprehensive Earthquake Catalog (ComCat). earthquake.usgs.gov/earthquakes/feed/",
+    license: "Public Domain (U.S. Government)",
     project: ECO_DRR,
   },
   {
@@ -76,6 +82,8 @@ export const HAZARD_LAYERS = [
     desc: "Annual physical exposure to surges from cyclones.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
     sourceUrl: "https://unepgrid.ch/en/activity/1BDE1705",
+    citation: "GAR/PREVIEW Platform, UNEP/GRID-Geneva. Based on Ward, P.J. et al. (2020): Aqueduct Floods Methodology. WRI.",
+    license: "CC BY 4.0",
     project: ECO_DRR,
   },
   {
@@ -84,8 +92,10 @@ export const HAZARD_LAYERS = [
     label: "Tropical Cyclones",
     type: "rt",
     desc: "Cyclone wind speed and physical exposure.",
-    source: "STORM Tropical Cyclone dataset (CC0 1.0); IRIS Imperial College Storm Model (CC BY 4.0).",
+    source: "STORM Tropical Cyclone dataset (Bloemendaal et al.); IRIS Imperial College Storm Model.",
     sourceUrl: "https://www.nature.com/articles/s41597-020-0381-2",
+    citation: "Bloemendaal, N. et al. (2020): Generation of a global synthetic tropical cyclone hazard dataset using STORM. Scientific Data, 7: 40. doi:10.1038/s41597-020-0381-2.",
+    license: "CC0 1.0 (STORM) / CC BY 4.0 (IRIS)",
     project: ECO_DRR,
     sources: [
       {
@@ -109,6 +119,8 @@ export const HAZARD_LAYERS = [
     desc: "Earthquake and precipitation triggered landslides.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
     sourceUrl: "https://unepgrid.ch/en/activity/1BDE1705",
+    citation: "GAR/PREVIEW Platform, UNEP/GRID-Geneva.",
+    license: "UNEP",
     project: ECO_DRR,
     sources: [
       {
@@ -132,6 +144,8 @@ export const HAZARD_LAYERS = [
     desc: "Tsunami exposure and frequency.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
     sourceUrl: "https://unepgrid.ch/en/activity/1BDE1705",
+    citation: "GAR/PREVIEW Platform, UNEP/GRID-Geneva.",
+    license: "UNEP",
     project: ECO_DRR,
     sources: [
       {

@@ -77,112 +77,92 @@ export function buildGuidePanel() {
 
 // ── Sources ───────────────────────────────────────────────────────────────────
 
-const SOURCES = [
+import { TABS } from "../config/layers/index.js";
+
+// Platform-level credits not tied to any specific layer.
+const PLATFORM_CREDITS = [
   {
-    category: "Hazard",
-    entries: [
-      {
-        label: "River & coastal flooding",
-        detail: "GAR/PREVIEW platform (UNEP/GRID‑Geneva) via MapX. Reference data: WRI Aqueduct Floods (CC BY 4.0), JRC Global River Flood Hazard Maps (CC BY 4.0).",
-        url: "https://unepgrid.ch/en/activity/1BDE1705",
-      },
-      {
-        label: "Tropical cyclones",
-        detail: "STORM Tropical Cyclone dataset (CC0 1.0); IRIS Imperial College Storm Model (CC BY 4.0).",
-        url: "https://www.nature.com/articles/s41597-020-0381-2",
-      },
-      {
-        label: "Extreme heat & droughts",
-        detail: "Lange et al. 2020 via ISIMIP (CC0 1.0). Multi-model ensemble; RCP 2.6 / 6.0 scenarios.",
-        url: "https://www.isimip.org/",
-      },
-      {
-        label: "Earthquakes",
-        detail: "GEM Global Seismic Hazard Map (CC BY‑NC‑SA 4.0). Peak Ground Acceleration, 10% probability of exceedance in 50 years.",
-        url: "https://www.globalquakemodel.org/gem",
-      },
-      {
-        label: "Additional hazard layers",
-        detail: "To be confirmed with the UNDRR programme team. Upgraded CRI layers are in preparation.",
-      },
-    ],
+    label: "MapX",
+    detail: "Map data hosted on MapX by UNEP/GRID-Geneva.",
+    url: "https://app.mapx.org/",
   },
   {
-    category: "Exposure",
-    entries: [
-      {
-        label: "Roads & railways",
-        detail: "OpenStreetMap contributors (ODbL). Extract via the GRI baseline.",
-        url: "https://www.openstreetmap.org/",
-      },
-      {
-        label: "Power infrastructure",
-        detail: "Gridfinder transmission network (CC BY 4.0); WRI Global Powerplants Database (CC BY 4.0).",
-        url: "https://datasets.wri.org/dataset/globalpowerplantdatabase",
-      },
-      {
-        label: "Cropland",
-        detail: "UNDRR Metrics project. Layer confirmed; final MapX view ID to be confirmed.",
-      },
-      {
-        label: "Additional exposure layers",
-        detail: "To be confirmed with the UNDRR programme team.",
-      },
-    ],
-  },
-  {
-    category: "Vulnerability",
-    entries: [
-      {
-        label: "Placeholder",
-        detail: "Sources to be confirmed with the UNDRR programme team. GRI reference sources include: Global Data Lab Subnational HDI, Relative Wealth Index (Meta Data for Good), and WDPA Protected Areas (UNEP‑WCMC / IUCN).",
-        url: "https://globaldatalab.org/shdi/",
-      },
-    ],
-  },
-  {
-    category: "Risk",
-    entries: [
-      {
-        label: "Placeholder",
-        detail: "Derived layers (hazard × exposure) to be confirmed. Methodology to be aligned with UNDRR Risk & Resilience Metrics framework.",
-      },
-    ],
-  },
-  {
-    category: "Platform",
-    entries: [
-      {
-        label: "MapX",
-        detail: "Map data hosted on MapX by UNEP/GRID‑Geneva.",
-        url: "https://app.mapx.org/",
-      },
-      {
-        label: "GRI Risk Viewer",
-        detail: "This tool is the successor to the GRI Risk Viewer by Oxford OPSIS. Layer inventory and interaction model adapted under attribution.",
-        url: "https://global.infrastructureresilience.org",
-      },
-    ],
+    label: "GRI Risk Viewer",
+    detail: "This tool is the successor to the GRI Risk Viewer by Oxford OPSIS. Layer inventory and interaction model adapted under attribution.",
+    url: "https://global.infrastructureresilience.org",
   },
 ];
 
+function escHtml(s) {
+  if (s == null) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function sourceCell(source, url) {
+  if (!source) return "";
+  return url
+    ? `<a href="${escHtml(url)}" target="_blank" rel="noopener">${escHtml(source)}</a>`
+    : escHtml(source);
+}
+
+function buildSourcesTable(layers) {
+  const rows = layers.map((layer) => {
+    const isDisabled = layer.disabled || (!layer.id && !(layer.sources && layer.sources.length));
+    const rowClass = isDisabled ? ' class="data-table__row--planned"' : "";
+    const statusBadge = isDisabled
+      ? `<span class="data-table__badge">Planned</span> `
+      : "";
+    return `
+      <tr${rowClass}>
+        <td>${statusBadge}${escHtml(layer.label)}</td>
+        <td>${sourceCell(layer.source, layer.sourceUrl)}</td>
+        <td>${escHtml(layer.citation)}</td>
+        <td class="data-table__license">${escHtml(layer.license)}</td>
+        <td>${escHtml(layer.note || layer.desc)}</td>
+      </tr>`;
+  }).join("");
+
+  return `
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Dataset</th>
+            <th scope="col">Source</th>
+            <th scope="col">Citation</th>
+            <th scope="col">License</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
 export function buildSourcesPanel() {
-  const sections = SOURCES.map(({ category, entries }) => `
-    <div class="info-source-category">
-      <h3 class="info-source-category__title">
-        <span class="mg-tag mg-tag--outline">${category}</span>
-      </h3>
-      <div class="info-source-entries">
-        ${entries.map((e) => `
-          <div class="info-source-entry">
-            <p class="info-source-entry__label">${e.url
-              ? `<a href="${e.url}" target="_blank" rel="noopener">${e.label}</a>`
-              : e.label
-            }</p>
-            <p class="info-source-entry__detail">${e.detail}</p>
-          </div>
-        `).join("")}
-      </div>
+  const categorySections = TABS.map((tab) => {
+    return `
+      <div class="info-page-section info-page-section--wide">
+        <div class="mg-container">
+          <h2 class="info-page-section__title">
+            <span class="mg-tag mg-tag--outline">${escHtml(tab.label)}</span> Data
+          </h2>
+          ${buildSourcesTable(tab.layers)}
+        </div>
+      </div>`;
+  }).join("");
+
+  const platformRows = PLATFORM_CREDITS.map((e) => `
+    <div class="info-source-entry">
+      <p class="info-source-entry__label">${e.url
+        ? `<a href="${escHtml(e.url)}" target="_blank" rel="noopener">${escHtml(e.label)}</a>`
+        : escHtml(e.label)
+      }</p>
+      <p class="info-source-entry__detail">${escHtml(e.detail)}</p>
     </div>
   `).join("");
 
@@ -190,20 +170,23 @@ export function buildSourcesPanel() {
     <div class="info-page-hero info-page-hero--secondary">
       <div class="mg-container">
         <h1 class="info-page-hero__title">Sources</h1>
-        <p class="info-page-hero__intro">Data sources for each category. Placeholder entries will be updated as layers are confirmed with the UNDRR programme team.</p>
+        <p class="info-page-hero__intro">Full attribution, citation, and licensing information for all datasets used in this tool. Planned layers are shown for transparency.</p>
+      </div>
+    </div>
+
+    ${categorySections}
+
+    <div class="info-page-section info-page-section--grey">
+      <div class="mg-container">
+        <h2 class="info-page-section__title">Platform</h2>
+        <div class="info-source-entries">${platformRows}</div>
       </div>
     </div>
 
     <div class="info-page-section">
       <div class="mg-container">
-        ${sections}
-      </div>
-    </div>
-
-    <div class="info-page-section info-page-section--grey">
-      <div class="mg-container">
         <h2 class="info-page-section__title">Layer inventory</h2>
-        <p>Download a full inventory of all data layers configured in this tool, including MapX view IDs, data types, source attribution, and status notes. Useful for technical review and handoff.</p>
+        <p>Download a full inventory of all data layers configured in this tool, including MapX view IDs, data types, source attribution, citation, license, and status notes.</p>
         <p>
           <button id="btn-download-inventory" class="mg-button mg-button-secondary">
             Download layer inventory (CSV)
@@ -217,6 +200,7 @@ export function buildSourcesPanel() {
 
   return panel;
 }
+
 
 // ── Downloads ─────────────────────────────────────────────────────────────────
 
