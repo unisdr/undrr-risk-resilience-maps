@@ -10,7 +10,6 @@ import { TABS } from "../config/layers.js";
 import * as store from "../state/store.js";
 import { viewAdd, viewRemove } from "../sdk/views.js";
 import { isSDKReady } from "../sdk/client.js";
-import { setViewLayerTransparency } from "../sdk/filters.js";
 import { buildHomePanel } from "./home.js";
 import { buildGuidePanel, buildSourcesPanel, buildDownloadsPanel } from "./info-panels.js";
 import { buildWidget, isCompound, compoundKey } from "./widgets/index.js";

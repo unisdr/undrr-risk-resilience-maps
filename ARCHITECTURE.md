@@ -35,6 +35,7 @@ undrr-risk-resilience-maps/
 │   │   └── hash.js             # URL hash encoding/decoding + layer index lookup
 │   ├── ui/
 │   │   ├── sidebar.js          # Nav routing, layer panel, accordions, clear-all
+│   │   ├── layer-controls.js   # Per-layer opacity slider and legend renderer
 │   │   ├── home.js             # Home / About full-page view
 │   │   ├── info-panels.js      # Guide, Sources, Downloads full-page views
 │   │   ├── infobox.js          # Feature click popup
@@ -154,9 +155,10 @@ All styling builds on the [UNDRR Mangrove component library](https://assets.undr
 ### Layer panel controls
 
 The floating layer panel includes:
-- **Per-layer accordions** — expand to reveal opacity slider, legend, and source-switching widget
+- **Per-layer accordions** — expand to reveal opacity slider, legend, and source-switching widget. Built by `buildLayerAccordion()` in `sidebar.js`; returns `{ wrapper, eyeBtn }` so the sidebar can maintain a `layerElementMap` (key → DOM references) without positional DOM queries.
 - **Eye toggle** — turns a layer on/off; aria-pressed reflects state
-- **Clear all button** — appears in the panel header when any layer is active; turns off all active layers across all tabs at once
+- **Clear all button** — appears in the panel header; iterates `layerElementMap` to turn off all active layers across all tabs at once
+- **Opacity slider / legend** — rendered by `src/ui/layer-controls.js` after a layer is turned on. The SDK uses "transparency" (0 = opaque, 100 = invisible); the UI presents "opacity" (inverse). If the layer config has a local `legend` array, HTML colour swatches are rendered; the SDK's server-rendered legend image is shown as a collapsed diagnostic when a local legend exists, or as the primary legend when no local override is present.
 
 ### Feature popups and click handling
 
@@ -168,8 +170,8 @@ Format: `#tab?layers=key:sourceIdx,key:sourceIdx,...`
 
 - Simple layers: just the key (e.g. `population`)
 - Compound layers: key + source index (e.g. `earthquake-pga:2`); index 0 is omitted for brevity
-- On initial load, `restoreLayersFromHash()` validates and clamps source indices before applying them
-- On `hashchange`, `reconcileLayersFromHash()` diffs current state against the new URL and turns layers on/off accordingly
+- On initial load, `restoreLayersFromHash()` validates and clamps source indices before applying them. Source index is always set (including 0) to ensure any prior state is cleared.
+- On `hashchange`, `reconcileLayersFromHash()` diffs current state against the new URL: turns layers off if absent, turns them on with correct source if present, and switches source directly (via `switchSource`) if a compound layer stays on but its source index changes.
 
 ## Build pipeline
 
@@ -180,7 +182,21 @@ Format: `#tab?layers=key:sourceIdx,key:sourceIdx,...`
 
 ## Testing
 
-No automated tests are currently configured. `npm test` will return "no test files found." Priority areas for future coverage: hash parse/write round-trips, `switchTab` routing, compound layer source switching, and duplicate view ID detection.
+Vitest + jsdom is configured in `vite.config.js`. Run tests with `npm test`.
+
+Test files cover pure and near-pure modules:
+
+| File | What it tests |
+|---|---|
+| `src/state/hash.test.js` | `parseHash`/`writeHash` round-trips, `getLayerByKey`, `getTabForLayerKey` |
+| `src/config/validate.test.js` | All error conditions (missing IDs, duplicate views, wrong project, legend schema) |
+| `src/ui/widgets/sub-tabs.test.js` | DOM construction, initial state, callbacks, aria roles |
+| `src/ui/widgets/stepped-slider.test.js` | DOM, initial state, debounce behaviour |
+| `src/ui/infobox.test.js` | Hide/show, title resolution, SKIP_KEYS, Escape/close, XSS escaping, singleton handler |
+| `src/ui/layer-controls.test.js` | Opacity inversion semantics, SDK error fallbacks, legend swatches, SDK image fallback/diagnostic |
+| `src/utils/export-layers.test.js` | BOM, CRLF, headers, compound layer expansion, project labels, disabled status, CSV quoting |
+
+`sidebar.js` integration tests (hash restore, reconcile, clear-all) are not yet written — testing them requires a full DOM with `buildSidebar()` and mocked SDK modules.
 
 ## What this is not
 
