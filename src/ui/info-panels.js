@@ -148,9 +148,7 @@ export function buildSourcesPanel() {
     return `
       <div class="info-page-section info-page-section--wide">
         <div class="mg-container">
-          <h2 class="info-page-section__title">
-            <span class="mg-tag mg-tag--outline">${escHtml(tab.label)}</span> Data
-          </h2>
+          <h2 class="info-page-section__title">${escHtml(tab.label)} Data</h2>
           ${buildSourcesTable(tab.layers)}
         </div>
       </div>`;
