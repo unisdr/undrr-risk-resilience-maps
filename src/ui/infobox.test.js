@@ -82,7 +82,7 @@ describe("showInfobox", () => {
     expect(body).not.toMatch(/\bgid\b/i);
     expect(body).not.toMatch(/\bgeom\b/i);
     expect(body).not.toMatch(/\bmx_t0\b/i);
-    expect(body).toContain("value");
+    expect(body).toContain("Value"); // infobox capitalises the key
   });
 
   // --- keyboard + close button ---

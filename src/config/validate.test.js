@@ -201,7 +201,16 @@ describe("validateLayers", () => {
     ).toThrow();
   });
 
-  // --- error count ---
+  it("throws when a legend item is missing label", () => {
+    const layer = makeSimpleLayer({
+      legend: [{ color: "#f00" }], // no label
+    });
+    expect(() =>
+      validateLayers([makeTab("hazard", [layer])], PRIMARY),
+    ).toThrow();
+  });
+
+
 
   it("includes the error count in the thrown message", () => {
     const layers = [

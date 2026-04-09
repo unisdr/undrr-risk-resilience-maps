@@ -73,6 +73,9 @@ export function validateLayers(tabs, primaryProject) {
           if (!item.color) {
             errors.push(`${ctx} -- legend[${i}] missing color`);
           }
+          if (!item.label) {
+            errors.push(`${ctx} -- legend[${i}] missing label`);
+          }
         }
       }
     }

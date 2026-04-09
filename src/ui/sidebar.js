@@ -8,16 +8,14 @@
  */
 import { TABS } from "../config/layers.js";
 import * as store from "../state/store.js";
-import { viewAdd, viewRemove, getViewLegendImage } from "../sdk/views.js";
+import { viewAdd, viewRemove } from "../sdk/views.js";
 import { isSDKReady } from "../sdk/client.js";
-import {
-  setViewLayerTransparency,
-  getViewLayerTransparency,
-} from "../sdk/filters.js";
+import { setViewLayerTransparency } from "../sdk/filters.js";
 import { buildHomePanel } from "./home.js";
 import { buildGuidePanel, buildSourcesPanel, buildDownloadsPanel } from "./info-panels.js";
 import { buildWidget, isCompound, compoundKey } from "./widgets/index.js";
 import { parseHash, writeHash } from "../state/hash.js";
+import { addOpacitySlider, addLegend } from "./layer-controls.js";
 
 // MapX view types: cc = custom coded (live), rt = raster tile, vt = vector tile
 const TYPE_LABELS = { cc: "live", rt: "raster", vt: "vector" };
@@ -26,6 +24,11 @@ const INFO_TABS = ["home", "guide", "sources", "downloads"];
 
 // All valid tab IDs for hash routing
 const ALL_TABS = [...INFO_TABS, ...["hazard", "exposure", "vulnerability", "risk"]];
+
+// Built by buildSidebar(); maps layer.key → { layer, eyeBtn, wrapper }
+// Used by restoreLayersFromHash and reconcileLayersFromHash to avoid
+// positional DOM queries that break when layer order changes in config.
+const layerElementMap = new Map();
 
 /**
  * Build the UI and wire up all nav links.
@@ -45,8 +48,8 @@ export function buildSidebar() {
   // "Clear all" turns off every active layer across all tabs
   if (clearBtn) {
     clearBtn.addEventListener("click", () => {
-      for (const eyeBtn of document.querySelectorAll(".layer-eye.is-active")) {
-        eyeBtn.click();
+      for (const { eyeBtn } of layerElementMap.values()) {
+        if (eyeBtn.classList.contains("is-active")) eyeBtn.click();
       }
     });
   }
@@ -65,7 +68,11 @@ export function buildSidebar() {
     tabPanel.style.display = "none";
 
     for (const layer of tab.layers) {
-      tabPanel.appendChild(buildLayerAccordion(layer));
+      const { wrapper, eyeBtn } = buildLayerAccordion(layer);
+      if (layer.key && !layer.disabled) {
+        layerElementMap.set(layer.key, { layer, eyeBtn, wrapper });
+      }
+      tabPanel.appendChild(wrapper);
     }
 
     sidebarBody.appendChild(tabPanel);
@@ -203,34 +210,25 @@ function safeSourceIdx(layer, sourceIdx) {
 
 /**
  * Restore layer state from the URL hash. Call after SDK is ready.
- * Programmatically clicks the eye button for each layer in the hash.
+ * Uses layerElementMap (built during buildSidebar) for key-based lookup,
+ * eliminating positional DOM queries that break when layer order changes.
  */
 export async function restoreLayersFromHash() {
   const { layers } = parseHash();
   if (layers.length === 0) return;
 
   for (const { key, sourceIdx } of layers) {
-    // Find the layer config and its DOM wrapper
-    for (const tab of TABS) {
-      for (let i = 0; i < tab.layers.length; i++) {
-        const layer = tab.layers[i];
-        if (layer.key !== key || layer.disabled) continue;
+    const el = layerElementMap.get(key);
+    if (!el) continue;
+    const { layer, eyeBtn } = el;
 
-        // Validate and clamp source index before storing
-        const safeIdx = safeSourceIdx(layer, sourceIdx);
-        if (isCompound(layer) && safeIdx > 0) {
-          store.setActiveSource(compoundKey(layer), safeIdx);
-        }
+    if (isCompound(layer)) {
+      // Always set source index — even 0, to clear any prior state
+      store.setActiveSource(compoundKey(layer), safeSourceIdx(layer, sourceIdx));
+    }
 
-        // Find the corresponding DOM eye button and click it
-        const tabPanel = document.getElementById(`tab-${tab.id}`);
-        if (!tabPanel) continue;
-        const items = tabPanel.querySelectorAll(".layer-item");
-        const eyeBtn = items[i]?.querySelector(".layer-eye");
-        if (eyeBtn && !eyeBtn.classList.contains("is-active")) {
-          eyeBtn.click();
-        }
-      }
+    if (!eyeBtn.classList.contains("is-active")) {
+      eyeBtn.click();
     }
   }
 }
@@ -238,36 +236,35 @@ export async function restoreLayersFromHash() {
 /**
  * Reconcile open layer state against a parsed hash layers array.
  * Called on hashchange (back/forward) after initial load.
- * Turns off layers not in the hash, turns on layers that should be on.
+ * - Turns off layers not in the hash.
+ * - Turns on layers that should be on.
+ * - Switches source index for compound layers that stay on but change source.
  */
 async function reconcileLayersFromHash(hashLayers) {
-  const targetKeys = new Set(hashLayers.map((l) => l.key));
+  const targetMap = new Map(hashLayers.map((l) => [l.key, l]));
 
-  // Build a flat list of all active layer keys from current state
-  for (const tab of TABS) {
-    for (let i = 0; i < tab.layers.length; i++) {
-      const layer = tab.layers[i];
-      if (!layer.key || layer.disabled) continue;
+  for (const [key, { layer, eyeBtn, wrapper }] of layerElementMap) {
+    const isOn = eyeBtn.classList.contains("is-active");
+    const hashEntry = targetMap.get(key);
+    const shouldBeOn = Boolean(hashEntry);
 
-      const tabPanel = document.getElementById(`tab-${tab.id}`);
-      if (!tabPanel) continue;
-      const items = tabPanel.querySelectorAll(".layer-item");
-      const eyeBtn = items[i]?.querySelector(".layer-eye");
-      if (!eyeBtn) continue;
-
-      const isOn = eyeBtn.classList.contains("is-active");
-      const shouldBeOn = targetKeys.has(layer.key);
-
-      if (isOn && !shouldBeOn) {
-        eyeBtn.click(); // turn off
-      } else if (!isOn && shouldBeOn) {
-        // Apply source index before turning on
-        const entry = hashLayers.find((l) => l.key === layer.key);
-        if (entry && isCompound(layer)) {
-          const safeIdx = safeSourceIdx(layer, entry.sourceIdx);
-          if (safeIdx > 0) store.setActiveSource(compoundKey(layer), safeIdx);
-        }
-        eyeBtn.click(); // turn on
+    if (isOn && !shouldBeOn) {
+      eyeBtn.click(); // turn off
+    } else if (!isOn && shouldBeOn) {
+      if (isCompound(layer)) {
+        // Always set — including 0 — so any prior source state is cleared
+        store.setActiveSource(compoundKey(layer), safeSourceIdx(layer, hashEntry.sourceIdx));
+      }
+      eyeBtn.click(); // turn on
+    } else if (isOn && shouldBeOn && isCompound(layer)) {
+      // Layer stays on: switch source if hash encodes a different index
+      const safeIdx = safeSourceIdx(layer, hashEntry.sourceIdx);
+      const currentIdx = store.getActiveSource(compoundKey(layer));
+      if (safeIdx !== currentIdx) {
+        const descEl = wrapper.querySelector(".layer-desc");
+        const sliderSlot = wrapper.querySelector(".layer-slider-slot");
+        const legendSlot = wrapper.querySelector(".layer-legend-slot");
+        await switchSource(layer, compoundKey(layer), safeIdx, descEl, sliderSlot, legendSlot);
       }
     }
   }
@@ -350,6 +347,8 @@ function buildLayerAccordion(layer) {
     header.setAttribute("role", "button");
     header.setAttribute("aria-expanded", "false");
 
+    const eyeBtn = header.querySelector(".layer-eye");
+
     const toggleAccordion = () => {
       const open = body.style.display !== "none";
       body.style.display = open ? "none" : "block";
@@ -364,9 +363,11 @@ function buildLayerAccordion(layer) {
         toggleAccordion();
       }
     });
+
+    return { wrapper, eyeBtn };
   }
 
-  return wrapper;
+  return { wrapper, eyeBtn: null };
 }
 
 async function toggleLayer(layer, eyeBtn, wrapper) {
@@ -496,108 +497,5 @@ async function switchSource(layer, key, newIdx, descEl, sliderSlot, legendSlot) 
   addLegend(legendLayer, legendSlot);
 }
 
-async function addOpacitySlider(idView, container) {
-  const row = document.createElement("div");
-  row.className = "opacity-row";
 
-  const lbl = document.createElement("label");
-  lbl.textContent = "Opacity";
-  row.appendChild(lbl);
 
-  const slider = document.createElement("input");
-  slider.type = "range";
-  slider.min = "0";
-  slider.max = "100";
-  slider.value = "100";
-
-  const valueDisplay = document.createElement("span");
-  valueDisplay.className = "opacity-value";
-  valueDisplay.textContent = "100%";
-
-  // SDK uses "transparency" (0=opaque, 100=invisible); UI shows "opacity"
-  // (0=invisible, 100=opaque). Convert: opacity = 100 - transparency.
-  try {
-    const current = await getViewLayerTransparency(idView);
-    if (typeof current === "number") {
-      slider.value = String(100 - current);
-      valueDisplay.textContent = `${100 - current}%`;
-    }
-  } catch {
-    // Default to 100% opacity
-  }
-
-  slider.addEventListener("input", async () => {
-    const opacity = Number(slider.value);
-    valueDisplay.textContent = `${opacity}%`;
-    try {
-      await setViewLayerTransparency(idView, 100 - opacity);
-    } catch {
-      // Transparency errors are non-fatal
-    }
-  });
-
-  row.appendChild(slider);
-  row.appendChild(valueDisplay);
-  container.appendChild(row);
-}
-
-/**
- * Render the legend for a layer. If the layer config has a local `legend`
- * array, render HTML swatches from that. The SDK legend image (server-
- * rendered PNG) is still fetched -- shown as the primary legend when no
- * local override exists, or tucked into a collapsed diagnostic toggle
- * when one does.
- */
-async function addLegend(layer, container) {
-  const hasLocalLegend = Array.isArray(layer.legend) && layer.legend.length > 0;
-  if (hasLocalLegend) {
-    const el = document.createElement("div");
-    el.className = "html-legend";
-    for (const item of layer.legend) {
-      const row = document.createElement("div");
-      row.className = "html-legend-row";
-
-      const swatch = document.createElement("span");
-      swatch.className = "html-legend-swatch";
-      swatch.style.background = item.color || "#ccc";
-      row.appendChild(swatch);
-
-      const label = document.createElement("span");
-      label.className = "html-legend-label";
-      label.textContent = item.label || "";
-      row.appendChild(label);
-
-      el.appendChild(row);
-    }
-    container.appendChild(el);
-  }
-
-  // Fetch SDK legend image
-  try {
-    const legendData = await getViewLegendImage(layer.id);
-    if (!legendData) return;
-
-    const img = document.createElement("img");
-    img.className = "layer-legend-img";
-    img.src = legendData.startsWith("data:")
-      ? legendData
-      : `data:image/png;base64,${legendData}`;
-    img.alt = "SDK legend";
-
-    if (hasLocalLegend) {
-      // Show as collapsed diagnostic
-      const details = document.createElement("details");
-      details.className = "legend-diagnostic";
-      const summary = document.createElement("summary");
-      summary.textContent = "SDK legend (diagnostic)";
-      details.appendChild(summary);
-      details.appendChild(img);
-      container.appendChild(details);
-    } else {
-      // No local override -- show SDK image directly
-      container.appendChild(img);
-    }
-  } catch {
-    // Not all layers have legends
-  }
-}

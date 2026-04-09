@@ -2,36 +2,25 @@
  * Home / About page — full-page view using UNDRR Mangrove design system classes.
  */
 
-const CATEGORIES = [
-  {
-    id: "hazard",
-    label: "Hazard",
-    icon: "01",
-    desc: "Natural hazards including river and coastal floods, droughts, earthquakes, and tropical cyclones.",
-    color: "#c72236",
-  },
-  {
-    id: "exposure",
-    label: "Exposure",
-    icon: "02",
-    desc: "Infrastructure and population elements at risk: roads, railways, power networks, and cropland.",
-    color: "#ed833f",
-  },
-  {
-    id: "vulnerability",
-    label: "Vulnerability",
-    icon: "03",
-    desc: "Socioeconomic and structural factors that amplify harm when hazards strike.",
-    color: "#f0b429",
-  },
-  {
-    id: "risk",
-    label: "Risk",
-    icon: "04",
-    desc: "Combined assessment showing where hazard, exposure, and vulnerability converge.",
-    color: "#004f91",
-  },
-];
+import { TABS } from "../config/layers.js";
+
+/**
+ * Visual properties for each category card. id/label come from TABS so
+ * these never get out of sync with the navigation bar.
+ */
+const CARD_VISUAL = {
+  hazard:        { icon: "01", color: "#c72236", desc: "Natural hazards including river and coastal floods, droughts, earthquakes, and tropical cyclones." },
+  exposure:      { icon: "02", color: "#ed833f", desc: "Infrastructure and population elements at risk: roads, railways, power networks, and cropland." },
+  vulnerability: { icon: "03", color: "#f0b429", desc: "Socioeconomic and structural factors that amplify harm when hazards strike." },
+  risk:          { icon: "04", color: "#004f91", desc: "Combined assessment showing where hazard, exposure, and vulnerability converge." },
+};
+
+// Derive categories from TABS so id and label are never duplicated
+const CATEGORIES = TABS.map((tab) => ({
+  id: tab.id,
+  label: tab.label,
+  ...CARD_VISUAL[tab.id],
+})).filter((c) => c.icon); // skip any tabs that have no card visual defined
 
 const ROADMAP = [
   "Subnational vulnerability indices",
