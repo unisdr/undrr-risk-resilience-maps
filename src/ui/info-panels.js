@@ -89,7 +89,7 @@ const SOURCES = [
       {
         label: "Tropical cyclones",
         detail: "STORM Tropical Cyclone dataset (CC0 1.0); IRIS Imperial College Storm Model (CC BY 4.0).",
-        url: "https://www.stormtropical.eu/",
+        url: "https://www.nature.com/articles/s41597-020-0381-2",
       },
       {
         label: "Extreme heat & droughts",
@@ -99,7 +99,7 @@ const SOURCES = [
       {
         label: "Earthquakes",
         detail: "GEM Global Seismic Hazard Map (CC BY‑NC‑SA 4.0). Peak Ground Acceleration, 10% probability of exceedance in 50 years.",
-        url: "https://www.globalquakemodel.org/product/global-seismic-hazard-assessment-program",
+        url: "https://www.globalquakemodel.org/gem",
       },
       {
         label: "Additional hazard layers",

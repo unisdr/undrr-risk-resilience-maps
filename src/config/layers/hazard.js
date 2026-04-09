@@ -47,7 +47,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Peak Ground Acceleration from the GEM Global Seismic Hazard Map.",
     source: "GEM Global Seismic Hazard Map (CC BY-NC-SA 4.0).",
-    sourceUrl: "https://www.globalquakemodel.org/product/global-seismic-hazard-assessment-program",
+    sourceUrl: "https://www.globalquakemodel.org/gem",
     project: ECO_DRR,
     sources: [
       { id: "MX-J3YTW-RUQN3-40P87", label: "250 yr" },
@@ -85,7 +85,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Cyclone wind speed and physical exposure.",
     source: "STORM Tropical Cyclone dataset (CC0 1.0); IRIS Imperial College Storm Model (CC BY 4.0).",
-    sourceUrl: "https://www.stormtropical.eu/",
+    sourceUrl: "https://www.nature.com/articles/s41597-020-0381-2",
     project: ECO_DRR,
     sources: [
       {

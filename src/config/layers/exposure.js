@@ -53,7 +53,7 @@ export const EXPOSURE_LAYERS = [
     type: "rt",
     desc: "Global coral reef distribution.",
     source: "UNEP-WCMC / IMaRS-USF Global Coral Reef dataset.",
-    sourceUrl: "https://data.unep-wcmc.org/datasets/1",
+    sourceUrl: "https://wcmc.io/coral-reef-data",
     project: ECO_DRR,
   },
   {
