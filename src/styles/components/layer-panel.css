@@ -51,6 +51,32 @@
 .layer-panel-title {
   font-size: 0.85rem;
   font-weight: 600;
+  flex: 1;
+}
+
+.layer-clear-btn {
+  font-size: 0.75rem;
+  color: var(--color-primary, #004f91);
+  background: transparent;
+  border: none;
+  padding: 0.2rem 0.4rem;
+  margin-right: 0.25rem;
+  cursor: pointer;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.layer-clear-btn:hover {
+  background: rgba(0, 79, 145, 0.08);
+}
+
+.layer-clear-btn:focus-visible {
+  outline: 2px solid var(--color-primary, #004f91);
+  outline-offset: 2px;
+}
+
+.layer-panel.is-collapsed .layer-clear-btn {
+  display: none;
 }
 
 .layer-panel-toggle {

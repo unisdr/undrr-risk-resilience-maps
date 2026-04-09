@@ -35,11 +35,21 @@ export function buildSidebar() {
   const panel = document.getElementById("sidebar");
   const toggle = document.getElementById("panel-toggle");
   const infoPage = document.getElementById("info-page");
+  const clearBtn = document.getElementById("layer-clear-btn");
 
   // Collapse / expand sidebar
   toggle.addEventListener("click", () => {
     panel.classList.toggle("is-collapsed");
   });
+
+  // "Clear all" turns off every active layer across all tabs
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      for (const eyeBtn of document.querySelectorAll(".layer-eye.is-active")) {
+        eyeBtn.click();
+      }
+    });
+  }
 
   // Populate info page with all info panels
   infoPage.appendChild(buildHomePanel());
@@ -170,6 +180,13 @@ function syncHashFromState() {
     }
   }
   writeHash(store.activeTab, layers);
+  updateClearBtn();
+}
+
+/** Show/hide the "Clear all" button based on whether any layers are active. */
+function updateClearBtn() {
+  const clearBtn = document.getElementById("layer-clear-btn");
+  if (clearBtn) clearBtn.hidden = store.openViews.size === 0;
 }
 
 /**
