@@ -83,12 +83,12 @@ import { TABS } from "../config/layers/index.js";
 const PLATFORM_CREDITS = [
   {
     label: "MapX",
-    detail: "Map data hosted on MapX by UNEP/GRID-Geneva.",
+    detail: "MapX (UNEP/GRID-Geneva) is a core part of this tool's data workflow and map interactivity. All geospatial layers are hosted, served, and rendered through the MapX platform.",
     url: "https://app.mapx.org/",
   },
   {
     label: "GRI Risk Viewer",
-    detail: "This tool is the successor to the GRI Risk Viewer by Oxford OPSIS. Layer inventory and interaction model adapted under attribution.",
+    detail: "This tool is inspired by the GRI Risk Viewer by Oxford OPSIS. Layer inventory and interaction model adapted under attribution.",
     url: "https://global.infrastructureresilience.org",
   },
 ];
