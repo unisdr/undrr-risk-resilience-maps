@@ -84,7 +84,7 @@ const SOURCES = [
       {
         label: "River & coastal flooding",
         detail: "GAR/PREVIEW platform (UNEP/GRID‑Geneva) via MapX. Reference data: WRI Aqueduct Floods (CC BY 4.0), JRC Global River Flood Hazard Maps (CC BY 4.0).",
-        url: "https://preview.grid.unep.ch/",
+        url: "https://unepgrid.ch/en/activity/1BDE1705",
       },
       {
         label: "Tropical cyclones",

@@ -8,7 +8,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Flood hazard from the GAR model.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX. Reference: WRI Aqueduct Floods (CC BY 4.0), JRC Global River Flood Hazard Maps (CC BY 4.0).",
-    sourceUrl: "https://preview.grid.unep.ch/",
+    sourceUrl: "https://unepgrid.ch/en/activity/1BDE1705",
     project: ECO_DRR,
     sources: [
       {
@@ -75,7 +75,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Annual physical exposure to surges from cyclones.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
-    sourceUrl: "https://preview.grid.unep.ch/",
+    sourceUrl: "https://unepgrid.ch/en/activity/1BDE1705",
     project: ECO_DRR,
   },
   {
@@ -108,7 +108,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Earthquake and precipitation triggered landslides.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
-    sourceUrl: "https://preview.grid.unep.ch/",
+    sourceUrl: "https://unepgrid.ch/en/activity/1BDE1705",
     project: ECO_DRR,
     sources: [
       {
@@ -131,7 +131,7 @@ export const HAZARD_LAYERS = [
     type: "rt",
     desc: "Tsunami exposure and frequency.",
     source: "GAR/PREVIEW platform (UNEP/GRID-Geneva) via MapX.",
-    sourceUrl: "https://preview.grid.unep.ch/",
+    sourceUrl: "https://unepgrid.ch/en/activity/1BDE1705",
     project: ECO_DRR,
     sources: [
       {
