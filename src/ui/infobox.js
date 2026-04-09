@@ -17,6 +17,9 @@ function esc(str) {
     .replace(/"/g, "&quot;");
 }
 
+// Single managed Escape handler — replaced on every show, cleaned up on every close
+let _escHandler = null;
+
 export function showInfobox(data) {
   const box = document.getElementById("infobox");
   if (!box) return;
@@ -82,15 +85,22 @@ export function showInfobox(data) {
 
   box.style.display = "block";
 
-  const close = () => { box.style.display = "none"; };
-  if (closeBtn) closeBtn.onclick = close;
+  // Remove any previous Escape handler before registering a new one
+  if (_escHandler) {
+    document.removeEventListener("keydown", _escHandler);
+    _escHandler = null;
+  }
 
-  // ESC key dismisses the infobox
-  const onKey = (e) => {
-    if (e.key === "Escape") {
-      close();
-      document.removeEventListener("keydown", onKey);
+  const close = () => {
+    box.style.display = "none";
+    if (_escHandler) {
+      document.removeEventListener("keydown", _escHandler);
+      _escHandler = null;
     }
   };
-  document.addEventListener("keydown", onKey);
+
+  if (closeBtn) closeBtn.onclick = close;
+
+  _escHandler = (e) => { if (e.key === "Escape") close(); };
+  document.addEventListener("keydown", _escHandler);
 }

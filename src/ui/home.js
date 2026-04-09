@@ -50,7 +50,7 @@ export function buildHomePanel() {
       <div class="mg-container">
         <p class="info-page-hero__eyebrow">Prototype · Interaction review only</p>
         <h1 class="info-page-hero__title">UNDRR Risk to Resilience Maps</h1>
-        <p class="info-page-hero__intro">A geospatial explorer organised around the risk&#8209;to&#8209;resilience framework. Select a category in the navigation bar to explore datasets across Hazard, Exposure, Vulnerability, and Risk.</p>
+        <p class="info-page-hero__intro">A geospatial explorer organised around the risk&#8209;to&#8209;resilience framework. Select a category below or in the navigation bar to explore datasets across Hazard, Exposure, Vulnerability, and Risk.</p>
       </div>
     </div>
 
@@ -59,7 +59,7 @@ export function buildHomePanel() {
         <h2 class="info-page-section__title">Explore by category</h2>
         <div class="info-category-grid">
           ${CATEGORIES.map((c) => `
-            <article class="mg-card mg-card__icon mg-card__icon--bordered info-category-card" style="--mg-card-border: ${c.color}">
+            <button class="mg-card mg-card__icon mg-card__icon--bordered info-category-card" data-tab="${c.id}" style="--mg-card-border: ${c.color}" aria-label="Explore ${c.label}">
               <div class="mg-card__visual">
                 <div class="mg-card__icon-wrap mg-card__icon-wrap--small">
                   <span class="info-category-card__num" style="color: ${c.color}">${c.icon}</span>
@@ -69,7 +69,7 @@ export function buildHomePanel() {
                 <header class="mg-card__title" style="color: ${c.color}">${c.label}</header>
                 <div class="mg-card__summary">${c.desc}</div>
               </div>
-            </article>
+            </button>
           `).join("")}
         </div>
       </div>
@@ -93,6 +93,13 @@ export function buildHomePanel() {
       </div>
     </div>
   `;
+
+  // Wire category card buttons to navigate to the matching data tab
+  for (const btn of el.querySelectorAll(".info-category-card[data-tab]")) {
+    btn.addEventListener("click", () => {
+      document.dispatchEvent(new CustomEvent("navigate-tab", { detail: btn.dataset.tab }));
+    });
+  }
 
   return el;
 }

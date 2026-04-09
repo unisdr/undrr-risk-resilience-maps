@@ -76,6 +76,21 @@
 
 .info-category-card {
   max-width: none !important;
+  /* Reset <button> defaults so it renders as a card */
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.info-category-card:hover,
+.info-category-card:focus-visible {
+  outline: 2px solid var(--mg-card-border, #004f91);
+  outline-offset: 2px;
 }
 
 .info-category-card__num {

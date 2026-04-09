@@ -9,6 +9,7 @@
 import { TABS } from "../config/layers.js";
 import * as store from "../state/store.js";
 import { viewAdd, viewRemove, getViewLegendImage } from "../sdk/views.js";
+import { isSDKReady } from "../sdk/client.js";
 import {
   setViewLayerTransparency,
   getViewLayerTransparency,
@@ -92,10 +93,22 @@ export function buildSidebar() {
   const initialTab = (hashTab && ALL_TABS.includes(hashTab)) ? hashTab : store.activeTab;
   switchTab(initialTab);
 
-  // Browser back/forward updates the active tab
+  // Browser back/forward: reconcile both tab and layer state from the new hash
   window.addEventListener("hashchange", () => {
-    const { tab } = parseHash();
+    const { tab, layers: hashLayers } = parseHash();
     if (tab && ALL_TABS.includes(tab) && tab !== store.activeTab) switchTab(tab);
+    if (isSDKReady()) reconcileLayersFromHash(hashLayers);
+  });
+
+  // Home page category cards dispatch a custom event to navigate to a data tab
+  document.addEventListener("navigate-tab", (e) => {
+    const tabId = e.detail;
+    if (tabId && ALL_TABS.includes(tabId)) {
+      switchTab(tabId);
+      // Expand the sidebar panel if it was collapsed
+      const panel = document.getElementById("sidebar");
+      if (panel) panel.classList.remove("is-collapsed");
+    }
   });
 }
 
@@ -160,6 +173,18 @@ function syncHashFromState() {
 }
 
 /**
+ * Clamp a sourceIdx from the hash to valid bounds for the given layer.
+ * Returns 0 if the value is invalid or out of range.
+ */
+function safeSourceIdx(layer, sourceIdx) {
+  if (!isCompound(layer)) return 0;
+  const n = layer.sources.length;
+  return Number.isInteger(sourceIdx) && sourceIdx >= 0 && sourceIdx < n
+    ? sourceIdx
+    : 0;
+}
+
+/**
  * Restore layer state from the URL hash. Call after SDK is ready.
  * Programmatically clicks the eye button for each layer in the hash.
  */
@@ -174,9 +199,10 @@ export async function restoreLayersFromHash() {
         const layer = tab.layers[i];
         if (layer.key !== key || layer.disabled) continue;
 
-        // Set compound source index before toggling
-        if (isCompound(layer) && sourceIdx > 0) {
-          store.setActiveSource(compoundKey(layer), sourceIdx);
+        // Validate and clamp source index before storing
+        const safeIdx = safeSourceIdx(layer, sourceIdx);
+        if (isCompound(layer) && safeIdx > 0) {
+          store.setActiveSource(compoundKey(layer), safeIdx);
         }
 
         // Find the corresponding DOM eye button and click it
@@ -187,6 +213,44 @@ export async function restoreLayersFromHash() {
         if (eyeBtn && !eyeBtn.classList.contains("is-active")) {
           eyeBtn.click();
         }
+      }
+    }
+  }
+}
+
+/**
+ * Reconcile open layer state against a parsed hash layers array.
+ * Called on hashchange (back/forward) after initial load.
+ * Turns off layers not in the hash, turns on layers that should be on.
+ */
+async function reconcileLayersFromHash(hashLayers) {
+  const targetKeys = new Set(hashLayers.map((l) => l.key));
+
+  // Build a flat list of all active layer keys from current state
+  for (const tab of TABS) {
+    for (let i = 0; i < tab.layers.length; i++) {
+      const layer = tab.layers[i];
+      if (!layer.key || layer.disabled) continue;
+
+      const tabPanel = document.getElementById(`tab-${tab.id}`);
+      if (!tabPanel) continue;
+      const items = tabPanel.querySelectorAll(".layer-item");
+      const eyeBtn = items[i]?.querySelector(".layer-eye");
+      if (!eyeBtn) continue;
+
+      const isOn = eyeBtn.classList.contains("is-active");
+      const shouldBeOn = targetKeys.has(layer.key);
+
+      if (isOn && !shouldBeOn) {
+        eyeBtn.click(); // turn off
+      } else if (!isOn && shouldBeOn) {
+        // Apply source index before turning on
+        const entry = hashLayers.find((l) => l.key === layer.key);
+        if (entry && isCompound(layer)) {
+          const safeIdx = safeSourceIdx(layer, entry.sourceIdx);
+          if (safeIdx > 0) store.setActiveSource(compoundKey(layer), safeIdx);
+        }
+        eyeBtn.click(); // turn on
       }
     }
   }
@@ -289,6 +353,14 @@ function buildLayerAccordion(layer) {
 }
 
 async function toggleLayer(layer, eyeBtn, wrapper) {
+  // Guard: SDK must be ready before attempting map operations
+  if (!isSDKReady()) {
+    const label = wrapper.querySelector(".layer-label");
+    const msg = label ? `${label.textContent} cannot be toggled yet — map is still loading.` : "Map is still loading.";
+    console.warn(msg);
+    return;
+  }
+
   const widgetSlot = wrapper.querySelector(".layer-widget-slot");
   const sliderSlot = wrapper.querySelector(".layer-slider-slot");
   const legendSlot = wrapper.querySelector(".layer-legend-slot");
@@ -297,7 +369,9 @@ async function toggleLayer(layer, eyeBtn, wrapper) {
   // Determine which view ID is currently active
   const key = compound ? compoundKey(layer) : null;
   const activeIdx = compound ? store.getActiveSource(key) : 0;
-  const activeViewId = compound ? layer.sources[activeIdx].id : layer.id;
+  // Guard against out-of-bounds active index (defensive; shouldn't happen with validated config)
+  const safeIdx = compound && activeIdx < layer.sources.length ? activeIdx : 0;
+  const activeViewId = compound ? layer.sources[safeIdx].id : layer.id;
 
   // Is this layer currently on? For compound layers, check if ANY source is open.
   const isOn = compound

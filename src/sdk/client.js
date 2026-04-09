@@ -7,6 +7,7 @@
  */
 
 let _mapx = null;
+let _sdkReady = false;
 
 export function initSDK(container, projectId) {
   /* global mxsdk */
@@ -30,4 +31,12 @@ export function initSDK(container, projectId) {
 export function getSDK() {
   if (!_mapx) throw new Error("SDK not initialised -- call initSDK() first");
   return _mapx;
+}
+
+export function setSDKReady(ready) {
+  _sdkReady = ready;
+}
+
+export function isSDKReady() {
+  return _sdkReady;
 }

@@ -2,27 +2,33 @@ import { ECO_DRR } from "./projects.js";
 
 export const RISK_LAYERS = [
   {
-    id: "MX-4918F-8A0E5-AF76B",
+    // TODO: replace with a composite risk view ID once available in MapX.
+    // These IDs are currently shared with hazard exposure sources, which
+    // corrupts toggle state. Disabled until dedicated risk views exist.
+    id: null,
     key: "risk-river-flood",
     label: "River Flood Exposure",
     type: "rt",
     desc: "Annual physical exposure to river floods.",
     project: ECO_DRR,
+    disabled: true,
   },
   {
-    id: "MX-10AE5-746D1-76777",
+    id: null,
     key: "risk-cyclone",
     label: "Cyclone Exposure",
     type: "rt",
     desc: "Annual physical exposure to tropical cyclones.",
     project: ECO_DRR,
+    disabled: true,
   },
   {
-    id: "MX-04E66-2E550-81068",
+    id: null,
     key: "risk-landslide",
     label: "Landslide Exposure",
     type: "rt",
     desc: "Annual physical exposure to landslides.",
     project: ECO_DRR,
+    disabled: true,
   },
 ];

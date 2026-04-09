@@ -8,7 +8,7 @@
 
 const VALID_TYPES = ["rt", "vt", "cc"];
 
-export function validateLayers(tabs) {
+export function validateLayers(tabs, primaryProject) {
   const errors = [];
   const seenIds = new Set();
 
@@ -30,6 +30,11 @@ export function validateLayers(tabs) {
         errors.push(`${ctx} -- invalid type "${layer.type}" (expected: ${VALID_TYPES.join(", ")})`);
       }
 
+      // Enabled layers must belong to the primary project (SDK is single-project)
+      if (!layer.disabled && primaryProject && layer.project && layer.project !== primaryProject) {
+        errors.push(`${ctx} -- enabled layer belongs to project "${layer.project}" but SDK only loads "${primaryProject}". Set disabled: true until data is consolidated.`);
+      }
+
       if (compound) {
         // Compound layer: validate sources and widget
         if (!layer.widget || !layer.widget.type) {
@@ -44,7 +49,7 @@ export function validateLayers(tabs) {
             errors.push(`${ctx} -- sources[${s}] missing label`);
           }
           if (src.id && seenIds.has(src.id)) {
-            console.warn(`Layer config: ${ctx} sources[${s}] reuses id "${src.id}"`);
+            errors.push(`${ctx} -- sources[${s}] reuses view id "${src.id}" (already used by another layer -- breaks toggle state)`);
           }
           if (src.id) seenIds.add(src.id);
         }
@@ -55,9 +60,9 @@ export function validateLayers(tabs) {
         }
       }
 
-      // Warn on duplicate IDs (same view in multiple tabs is valid but notable)
+      // Duplicate IDs across layers corrupt toggle state -- treat as an error
       if (layer.id && seenIds.has(layer.id)) {
-        console.warn(`Layer config: ${ctx} reuses id "${layer.id}" (shared across tabs)`);
+        errors.push(`${ctx} -- reuses view id "${layer.id}" (already used by another layer -- breaks toggle state)`);
       }
       if (layer.id) seenIds.add(layer.id);
 

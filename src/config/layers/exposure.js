@@ -10,12 +10,16 @@ export const EXPOSURE_LAYERS = [
     project: ECO_DRR,
   },
   {
+    // TODO: move this view into the ECO_DRR project. Currently in HOME project
+    // which the SDK cannot load (single-project architecture). Disabled until
+    // data is consolidated.
     id: "MX-KG1JB-OI13A-6RHKN",
     key: "land-cover",
     label: "Land Cover",
     type: "cc",
     desc: "ESA WorldCover 10m (2021). Sentinel-1/2 based.",
     project: HOME,
+    disabled: true,
   },
   {
     id: "MX-8F9EB-10D0B-93564",
