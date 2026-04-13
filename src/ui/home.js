@@ -13,6 +13,7 @@ const CARD_VISUAL = {
   exposure:      { icon: "02", color: "#ed833f", desc: "Infrastructure and population elements at risk: roads, railways, power networks, and cropland." },
   vulnerability: { icon: "03", color: "#f0b429", desc: "Socioeconomic and structural factors that amplify harm when hazards strike." },
   risk:          { icon: "04", color: "#004f91", desc: "Combined assessment showing where hazard, exposure, and vulnerability converge." },
+  resilience:    { icon: "05", color: "#0a7a5a", desc: "Planned resilience content, including linked indicators and future map layers as datasets are confirmed." },
 };
 
 // Derive categories from TABS so id and label are never duplicated
@@ -25,6 +26,7 @@ const CATEGORIES = TABS.map((tab) => ({
 const ROADMAP = [
   "Subnational vulnerability indices",
   "Early warning system layers",
+  "Resilience-linked indicators and country profiles",
   "Country-level risk profiles",
   "Side-by-side map comparison",
 ];
@@ -39,7 +41,7 @@ export function buildHomePanel() {
       <div class="mg-container">
         <p class="info-page-hero__eyebrow">Prototype · Interaction review only</p>
         <h1 class="info-page-hero__title">UNDRR Risk to Resilience Maps</h1>
-        <p class="info-page-hero__intro">A geospatial explorer organised around the risk&#8209;to&#8209;resilience framework. Select a category below or in the navigation bar to explore datasets across Hazard, Exposure, Vulnerability, and Risk.</p>
+        <p class="info-page-hero__intro">A geospatial explorer organised around the risk&#8209;to&#8209;resilience framework. Select a category below or in the navigation bar to explore datasets across Hazard, Exposure, Vulnerability, Risk, and planned Resilience content.</p>
       </div>
     </div>
 
@@ -92,4 +94,3 @@ export function buildHomePanel() {
 
   return el;
 }
-
