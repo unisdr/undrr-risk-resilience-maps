@@ -23,14 +23,6 @@ const CATEGORIES = TABS.map((tab) => ({
   ...CARD_VISUAL[tab.id],
 })).filter((c) => c.icon); // skip any tabs that have no card visual defined
 
-const ROADMAP = [
-  "Subnational vulnerability indices",
-  "Early warning system layers",
-  "Resilience-linked indicators and country profiles",
-  "Country-level risk profiles",
-  "Side-by-side map comparison",
-];
-
 export function buildHomePanel() {
   const el = document.createElement("div");
   el.className = "info-page-panel";
@@ -69,10 +61,9 @@ export function buildHomePanel() {
     <div class="info-page-section info-page-section--grey">
       <div class="mg-container">
         <div class="mg-highlight-box mg-highlight-box--secondary">
-          <h3>Coming soon</h3>
-          <ul>
-            ${ROADMAP.map((item) => `<li>${item}</li>`).join("")}
-          </ul>
+          <h3>In progress</h3>
+          <p>This prototype is currently focused on building out the interaction layer. Right now, the main goal is to support clear switching and comparison across multiple map layers while the source inventory is still being confirmed.</p>
+          <p>Next steps may include pulling related maps across category boundaries, such as showing a risk layer while reviewing vulnerability context, or introducing simple data visualisation patterns that help compare risk and vulnerability together. The exact mechanics are still to be determined, but first the priority is to lock down the map sources.</p>
         </div>
       </div>
     </div>
